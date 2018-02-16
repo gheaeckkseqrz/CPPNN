@@ -1,0 +1,24 @@
+#ifndef __OPENCLFUNCS__
+#define __OPENCLFUNCS__
+
+#include <iostream>
+
+namespace NN
+{
+  class Tensor;
+  
+  class OpenCLFuncs
+  {
+  public:
+    static OpenCLFuncs *getInstance();
+
+  public:
+    PROTOTYPES;
+
+  private:
+    OpenCLFuncs();
+    static OpenCLFuncs *_instance;
+  };
+}
+
+#endif

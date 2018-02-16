@@ -1,0 +1,28 @@
+#include <sstream>
+
+#include "OpenCL.h"
+#include "TorchStorage.h"
+
+namespace NN
+{
+  TorchStorage::TorchStorage()
+  {
+  }
+
+  TorchObject *TorchStorage::loadFromFile(std::ifstream &file, std::map<int, TorchObject*> &loaded)
+  {
+    _size = readNextInt(file);
+    std::string line = readNextLine(file);
+    std::stringstream ss(line);
+    std::vector<float> values(_size);
+    float v;
+    for (int i(0) ; i < _size ; ++i)
+      {
+	ss >> v;
+	values[i] = v;
+      }
+    _buffer = OpenCL::getInstance()->toGPU<float>(values);
+    assert(read() == values);
+    return this;
+  }
+}

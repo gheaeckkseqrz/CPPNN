@@ -1,0 +1,22 @@
+#include <ctime>
+
+#include "OpenCLFuncs.h"
+#include "OpenCL.h"
+#include "Tensor.h"
+
+namespace NN
+{
+  OpenCLFuncs * OpenCLFuncs::_instance = nullptr;
+
+  OpenCLFuncs::OpenCLFuncs()
+  {}
+
+  OpenCLFuncs *OpenCLFuncs::getInstance()
+  {
+    if (_instance == nullptr)
+      _instance = new OpenCLFuncs();
+    return _instance;
+  }
+
+  FUNCTIONS;
+}
