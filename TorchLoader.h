@@ -10,8 +10,8 @@ namespace NN
   public:
     static TorchLoader *getInstance();
 
-    TorchObject *loadFile(std::string const &torchFilePath);
-    TorchObject *create(int objectType, std::ifstream &file, std::map<int, TorchObject*> &loaded);
+    std::shared_ptr<TorchObject> loadFile(std::string const &torchFilePath);
+    std::shared_ptr<TorchObject> create(int objectType, std::ifstream &file, std::map<int, std::shared_ptr<TorchObject>> &loaded);
 
   private:
     TorchLoader();

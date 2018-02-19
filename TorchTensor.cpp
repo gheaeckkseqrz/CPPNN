@@ -12,7 +12,7 @@ namespace NN
   {
   }
 
-  TorchObject *TorchTensor::loadFromFile(std::ifstream &file, std::map<int, TorchObject*> &loaded)
+  std::shared_ptr<TorchObject> TorchTensor::loadFromFile(std::ifstream &file, std::map<int, std::shared_ptr<TorchObject>> &loaded)
   {
     int nDim = readNextInt(file);
     std::vector<int> sizes;
@@ -22,7 +22,7 @@ namespace NN
 	setSizes(sizes);
 	(void)readNextLine(file);
 	(void)readNextLine(file);
-	return this;
+	return std::shared_ptr<TorchObject>(this);
       }
     std::stringstream dims(readNextLine(file));
     size_t dimSize = 0;
@@ -37,9 +37,8 @@ namespace NN
       {
 	_offset = readNextInt(file) - 1;
 	int storageType = readNextInt(file);
-	TorchStorage *storage = dynamic_cast<TorchStorage*>(TorchLoader::getInstance()->create(storageType, file, loaded));
-	_storage.reset(storage);
+	_storage = std::dynamic_pointer_cast<TorchStorage>(TorchLoader::getInstance()->create(storageType, file, loaded));
       }
-    return this;
+    return std::shared_ptr<TorchObject>(this);
   }
 }

@@ -12,10 +12,10 @@ namespace NN
 
   std::shared_ptr<Input> Relu::forward(std::shared_ptr<Input> const &input)
   {
-    Tensor *inputTensor = dynamic_cast<Tensor*>(input.get());
-    if (_output == nullptr || dynamic_cast<Tensor*>(_output.get())->getSizes() != inputTensor->getSizes())
+    std::shared_ptr<Tensor> inputTensor = std::dynamic_pointer_cast<Tensor>(input);
+    if (_output == nullptr || std::dynamic_pointer_cast<Tensor>(_output)->getSizes() != inputTensor->getSizes())
     	_output.reset(new Tensor(inputTensor->getSizes()));
-    Tensor *outputTensor = dynamic_cast<Tensor*>(_output.get());
+    std::shared_ptr<Tensor> outputTensor = std::dynamic_pointer_cast<Tensor>(_output);
     OpenCLFuncs::getInstance()->relu(*inputTensor, *outputTensor, outputTensor->getNbElements());
     return _output;
   }

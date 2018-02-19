@@ -11,7 +11,7 @@ namespace NN
   public:
     TorchSequential();
 
-    virtual TorchObject *loadFromFile(std::ifstream &file, std::map<int, TorchObject*> &loaded);
+    virtual std::shared_ptr<TorchObject> loadFromFile(std::ifstream &file, std::map<int, std::shared_ptr<TorchObject>> &loaded);
   };
 }
 

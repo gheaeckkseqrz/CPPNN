@@ -11,14 +11,14 @@ namespace NN
     TorchTable();
     virtual ~TorchTable();
 
-    virtual TorchObject *loadFromFile(std::ifstream &file, std::map<int, TorchObject*> &loaded);
+    virtual std::shared_ptr<TorchObject> loadFromFile(std::ifstream &file, std::map<int, std::shared_ptr<TorchObject>> &loaded);
 
-    TorchObject *get(int key) const;
-    TorchObject *get(std::string const &key) const;
+    std::shared_ptr<TorchObject> get(int key) const;
+    std::shared_ptr<TorchObject> get(std::string const &key) const;
 
   private:
-    std::map<int, TorchObject*>         _intKeys;
-    std::map<std::string, TorchObject*> _stringKeys;
+    std::map<int, std::shared_ptr<TorchObject>>         _intKeys;
+    std::map<std::string, std::shared_ptr<TorchObject>> _stringKeys;
   };
 }
 

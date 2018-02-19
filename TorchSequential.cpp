@@ -8,17 +8,17 @@ namespace NN
   {
   }
 
-  TorchObject *TorchSequential::loadFromFile(std::ifstream &file, std::map<int, TorchObject *> &loaded)
+  std::shared_ptr<TorchObject> TorchSequential::loadFromFile(std::ifstream &file, std::map<int, std::shared_ptr<TorchObject>> &loaded)
   {
     int tableId = readNextInt(file);
-    TorchTable *t = (TorchTable*)TorchLoader::getInstance()->create(tableId, file, loaded);
-    TorchTable *modules = (TorchTable*)t->get("modules");
+    std::shared_ptr<TorchTable> t = std::dynamic_pointer_cast<TorchTable>(TorchLoader::getInstance()->create(tableId, file, loaded));
+    std::shared_ptr<TorchTable> modules = std::dynamic_pointer_cast<TorchTable>(t->get("modules"));
     int i = 1;
     while (modules->get(i) != nullptr)
       {
-	_modules.push_back(dynamic_cast<Module*>(modules->get(i)));
+	_modules.push_back(std::dynamic_pointer_cast<Module>(modules->get(i)));
 	i++;
       }
-    return this;
+    return std::shared_ptr<TorchObject>(this);
   }
 }

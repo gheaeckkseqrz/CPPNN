@@ -9,7 +9,7 @@ namespace NN
   {
   }
 
-  TorchObject *TorchStorage::loadFromFile(std::ifstream &file, std::map<int, TorchObject*> &loaded)
+  std::shared_ptr<TorchObject> TorchStorage::loadFromFile(std::ifstream &file, std::map<int, std::shared_ptr<TorchObject>> &loaded)
   {
     _size = readNextInt(file);
     std::string line = readNextLine(file);
@@ -23,6 +23,6 @@ namespace NN
       }
     _buffer = OpenCL::getInstance()->toGPU<float>(values);
     assert(read() == values);
-    return this;
+    return std::shared_ptr<TorchObject>(this);
   }
 }

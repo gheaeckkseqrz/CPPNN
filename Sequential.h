@@ -15,7 +15,7 @@ namespace NN
     virtual std::shared_ptr<Input> forward(std::shared_ptr<Input> const &input);
 
  protected:
-  std::vector<Module *> _modules;
+    std::vector<std::shared_ptr<Module>> _modules;
   };
 }
 

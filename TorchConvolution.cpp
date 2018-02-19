@@ -10,22 +10,19 @@ namespace NN
   {
   }
 
-  TorchObject *TorchConvolution::loadFromFile(std::ifstream &file, std::map<int, TorchObject*> &loaded)
+  std::shared_ptr<TorchObject> TorchConvolution::loadFromFile(std::ifstream &file, std::map<int, std::shared_ptr<TorchObject>> &loaded)
   {
     int tableId = readNextInt(file);
-    TorchTable *t = (TorchTable*)TorchLoader::getInstance()->create(tableId, file, loaded);
+    std::shared_ptr<TorchTable> table = std::dynamic_pointer_cast<TorchTable>(TorchLoader::getInstance()->create(tableId, file, loaded));
 
-    std::shared_ptr<Tensor> filterPtr;
-    filterPtr.reset((TorchTensor*)t->get("weight"));
-    std::shared_ptr<Tensor> biasPtr;
-    biasPtr.reset((TorchTensor*)t->get("bias"));
-
+    std::shared_ptr<Tensor> filterPtr = std::dynamic_pointer_cast<Tensor>(table->get("weight"));
+    std::shared_ptr<Tensor> biasPtr = std::dynamic_pointer_cast<Tensor>(table->get("bias"));
     setFilter(filterPtr, biasPtr);
 
-    _padW = (int)((TorchNumber*)t->get("padW"))->value();
-    _padH = (int)((TorchNumber*)t->get("padH"))->value();
-    _dW = (int)((TorchNumber*)t->get("dW"))->value();
-    _dH = (int)((TorchNumber*)t->get("dH"))->value();
-    return this;
+    _padW = (int)std::dynamic_pointer_cast<TorchNumber>(table->get("padW"))->value();
+    _padH = (int)std::dynamic_pointer_cast<TorchNumber>(table->get("padH"))->value();
+    _dW = (int)std::dynamic_pointer_cast<TorchNumber>(table->get("dW"))->value();
+    _dH = (int)std::dynamic_pointer_cast<TorchNumber>(table->get("dH"))->value();
+    return std::shared_ptr<TorchObject>(this);
   }
 }

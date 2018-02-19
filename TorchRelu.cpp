@@ -8,10 +8,10 @@ namespace NN
   {
   }
 
-  TorchObject *TorchRelu::loadFromFile(std::ifstream &file, std::map<int, TorchObject*> &loaded)
+  std::shared_ptr<TorchObject> TorchRelu::loadFromFile(std::ifstream &file, std::map<int, std::shared_ptr<TorchObject>> &loaded)
   {
     int tableId = readNextInt(file);
-    TorchTable *t = (TorchTable*)TorchLoader::getInstance()->create(tableId, file, loaded);
-    return this;
+    (void)TorchLoader::getInstance()->create(tableId, file, loaded);
+    return std::shared_ptr<TorchObject>(this);
   }
 }

@@ -26,15 +26,15 @@ namespace NN
     return _instance;
   }
 
-  TorchObject *TorchLoader::loadFile(std::string const &torchFilePath)
+  std::shared_ptr<TorchObject> TorchLoader::loadFile(std::string const &torchFilePath)
   {
-    std::map<int, TorchObject*> loaded;
+    std::map<int, std::shared_ptr<TorchObject>> loaded;
     std::ifstream file(torchFilePath);
     int type = std::atoi(readNextLine(file).c_str());
     return create(type, file, loaded);
   }
 
-  TorchObject *TorchLoader::create(int objectType, std::ifstream &file, std::map<int, TorchObject*> &loaded)
+  std::shared_ptr<TorchObject> TorchLoader::create(int objectType, std::ifstream &file, std::map<int, std::shared_ptr<TorchObject>> &loaded)
   {
     switch (objectType)
       {
@@ -65,9 +65,9 @@ namespace NN
 	// if (className == "nn.Dropout")
 	// 	  loaded[objectId] = new Dropout();
 	else if (className == "torch.FloatTensor" || className == "torch.LongTensor")
-	  loaded[objectId] = new TorchTensor();
+	  loaded[objectId] = (new TorchTensor())->loadFromFile(file, loaded);
 	else if (className == "torch.FloatStorage" || className == "torch.LongStorage")
-		loaded[objectId] = new TorchStorage();
+	  loaded[objectId] = (new TorchStorage())->loadFromFile(file, loaded);
 	// else if (className == "nn.CAddTable")
 	// 	loaded[objectId] = new CAddTable();
 	// else if (className == "nn.ConcatTable")
@@ -83,9 +83,9 @@ namespace NN
 	// else if (className == "nn.SpatialReflectionPadding")
 	// 	loaded[objectId] = new ReflectionPadding();
 	else if (className == "nn.ReLU")
-	  loaded[objectId] = new TorchRelu();
+	  loaded[objectId] = (new TorchRelu())->loadFromFile(file, loaded);
 	else if (className == "nn.Sequential")
-	  loaded[objectId] = new TorchSequential();
+	  loaded[objectId] = (new TorchSequential())->loadFromFile(file, loaded);
 	// else if (className == "nn.ShaveImage")
 	// 	loaded[objectId] = new ShaveImage();
 	// else if (className == "nn.SoftMax")
@@ -93,9 +93,9 @@ namespace NN
 	// else if (className == "nn.SpatialBatchNormalization")
 	// 	loaded[objectId] = new BatchNormalisation();
 	else if (className == "nn.SpatialMaxPooling")
-		loaded[objectId] = new TorchMaxPooling();
+	  loaded[objectId] = (new TorchMaxPooling())->loadFromFile(file, loaded);
 	else if (className == "nn.SpatialConvolution")
-		loaded[objectId] = new TorchConvolution();
+	  loaded[objectId] = (new TorchConvolution())->loadFromFile(file, loaded);
 	// else if (className == "nn.SpatialDilatedConvolution")
 	// 	loaded[objectId] = new DilatedConvolution();
 	// else if (className == "nn.SpatialFullConvolution")
@@ -113,7 +113,6 @@ namespace NN
 	    std::cerr << "Unknown class " <<  className << std::endl;
 	    return nullptr;
 	  }
-	loaded[objectId]->loadFromFile(file, loaded);
 	return loaded[objectId];
 	}
 	break;

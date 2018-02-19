@@ -23,7 +23,7 @@ namespace NN
     TorchObject();
     virtual ~TorchObject();
 
-    virtual TorchObject *loadFromFile(std::ifstream &file, std::map<int, TorchObject*> &loaded) = 0;
+    virtual std::shared_ptr<TorchObject> loadFromFile(std::ifstream &file, std::map<int, std::shared_ptr<TorchObject>> &loaded) = 0;
     TorchType getType() const;
 
     std::string _name;
