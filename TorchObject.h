@@ -2,6 +2,7 @@
 #define __TORCHOBJECT_H__
 
 #include <map>
+#include <memory>
 #include <fstream>
 
 namespace NN
