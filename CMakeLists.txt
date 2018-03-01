@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.1)
-project( ArtoNN )
+project( ArtoNNLib VERSION 1.0 DESCRIPTION "Neural Network Runtime" )
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_BUILD_TYPE Debug)
 find_package( OpenCL REQUIRED )
@@ -10,7 +10,7 @@ add_custom_command(
   DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/Kernels/*.cl
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/Kernels
   COMMENT "Generating code for OpenCLFuncs.")
-add_executable( TestNN main.cpp
+add_library( ArtoNNLib
   Convolution.cpp
   MaxPooling.cpp
   Module.cpp
@@ -30,4 +30,9 @@ add_executable( TestNN main.cpp
   TorchString.cpp
   TorchTable.cpp
   TorchTensor.cpp )
-target_link_libraries( TestNN ${OpenCL_LIBRARY} )
+set_target_properties( ArtoNNLib PROPERTIES VERSION ${PROJECT_VERSION})
+set_target_properties( ArtoNNLib PROPERTIES SOVERSION 1)
+target_link_libraries( ArtoNNLib ${OpenCL_LIBRARY} )
+
+add_executable( TestNN main.cpp )
+target_link_libraries( TestNN ArtoNNLib )
