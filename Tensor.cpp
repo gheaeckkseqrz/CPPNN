@@ -102,27 +102,36 @@ namespace NN
   Tensor &Tensor::add(Tensor const &o)
   {
     if (o.getNbElements() == _sizes[0])
-      OpenCLFuncs::getInstance()->tensorChannelAdd(*this, o, getNbElements());
+      OpenCLFuncs::getInstance()->tensorChannelAdd(*this, *this, o, getNbElements());
     else
-      OpenCLFuncs::getInstance()->tensorElementWiseAdd(*this, o, getNbElements());
+      OpenCLFuncs::getInstance()->tensorElementWiseAdd(*this, *this, o, getNbElements());
     return *this;
   }
 
   Tensor &Tensor::sub(Tensor const &o)
   {
-    OpenCLFuncs::getInstance()->tensorElementWiseSub(*this, o, getNbElements());
+    if (o.getNbElements() == _sizes[0])
+      OpenCLFuncs::getInstance()->tensorChannelSub(*this, *this, o, getNbElements());
+    else
+      OpenCLFuncs::getInstance()->tensorElementWiseSub(*this, *this, o, getNbElements());
     return *this;
   }
 
   Tensor &Tensor::mul(Tensor const &o)
   {
-    OpenCLFuncs::getInstance()->tensorElementWiseMul(*this, o, getNbElements());
+    if (o.getNbElements() == _sizes[0])
+      OpenCLFuncs::getInstance()->tensorChannelMul(*this, *this, o, getNbElements());
+    else
+      OpenCLFuncs::getInstance()->tensorElementWiseMul(*this, *this, o, getNbElements());
     return *this;
   }
 
   Tensor &Tensor::div(Tensor const &o)
   {
-    OpenCLFuncs::getInstance()->tensorElementWiseDiv(*this, o, getNbElements());
+    if (o.getNbElements() == _sizes[0])
+      OpenCLFuncs::getInstance()->tensorChannelDiv(*this, *this, o, getNbElements());
+    else
+      OpenCLFuncs::getInstance()->tensorElementWiseDiv(*this, *this, o, getNbElements());
     return *this;
   }
 

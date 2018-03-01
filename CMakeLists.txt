@@ -7,6 +7,7 @@ include_directories( ${OpenCL_INCLUDE_DIRS} )
 add_custom_command(
   OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/OpenCLFuncs.cpp ${CMAKE_CURRENT_SOURCE_DIR}/OpenCLFuncs.h
   COMMAND source .env/bin/activate && python kernels.py
+  DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/Kernels/*.cl
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/Kernels
   COMMENT "Generating code for OpenCLFuncs.")
 add_executable( TestNN main.cpp
