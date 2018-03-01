@@ -28,10 +28,15 @@ namespace NN
 
   std::shared_ptr<TorchObject> TorchLoader::loadFile(std::string const &torchFilePath)
   {
-    std::map<int, std::shared_ptr<TorchObject>> loaded;
     std::ifstream file(torchFilePath);
-    int type = std::atoi(readNextLine(file).c_str());
-    return create(type, file, loaded);
+    if (file.is_open())
+      {
+	std::map<int, std::shared_ptr<TorchObject>> loaded;
+	int type = std::atoi(readNextLine(file).c_str());
+	return create(type, file, loaded);
+      }
+    std::cerr << "Unable to open [" << torchFilePath << "]" << std::endl;
+    return nullptr;
   }
 
   std::shared_ptr<TorchObject> TorchLoader::create(int objectType, std::ifstream &file, std::map<int, std::shared_ptr<TorchObject>> &loaded)
