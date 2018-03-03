@@ -2,6 +2,13 @@ from os import listdir
 from os.path import isfile, join
 from parse import *
 
+def toCLType(typeName):
+    if typeName == "int":
+        return "(cl_int)"
+    if typeName == "float":
+        return "(cl_float)"
+    return ""
+
 def getUtilitiesFunctions():
     with open("Tensor.h") as f:
         return f.read()
@@ -16,8 +23,8 @@ def expandTensorParameter(tensorName):
 def expandTensorSetArg(tensorName, i):
     s  = "kernel.setArg(" + str(i) +   ", " + tensorName + ".getBuffer());\n"
     s += "kernel.setArg(" + str(i+1) + ", " + tensorName + ".getSizesBuffer());\n"
-    s += "kernel.setArg(" + str(i+2) + ", " + tensorName + ".getSizes().size());\n"
-    s += "kernel.setArg(" + str(i+3) + ", " + tensorName+  ".getOffset());\n"
+    s += "kernel.setArg(" + str(i+2) + ", (cl_int)" + tensorName + ".getSizes().size());\n"
+    s += "kernel.setArg(" + str(i+3) + ", (cl_int)" + tensorName+  ".getOffset());\n"
     return s
 
 def getParameterTypeAndName(parameter):
@@ -76,7 +83,7 @@ def generateFunction(filePath):
                 function += expandTensorSetArg(parameterName, i)
                 i += 4
             else:
-                function += "kernel.setArg(" + str(i) + ", " + parameterName + ");\n"
+                function += "kernel.setArg(" + str(i) + ", " + toCLType(parameterType) + parameterName + ");\n"
                 i += 1
         function += "clock_t begin = clock();\n"
         function += "std::cout << \"Running kernel [" + functionName + "] with \" << nbThread << \" threads - \";\n"
