@@ -84,6 +84,16 @@ namespace NN
     return total;
   }
 
+  bool Tensor::dataEquals(Tensor const &o, float tolerance) const
+  {
+    if (getNbElements() != o.getNbElements())
+      return false;
+    Tensor output(std::vector<float>({0}));
+    OpenCLFuncs::getInstance()->tensorDataEquals(*this, o, output, tolerance, getNbElements());
+    std::vector<float> res = output.read();
+    return res[0] == 0;
+  }
+
   Tensor &Tensor::add(float value)
   {
     OpenCLFuncs::getInstance()->tensorValueAdd(*this, *this, value, getNbElements());

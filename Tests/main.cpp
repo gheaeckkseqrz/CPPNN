@@ -3,3 +3,5 @@
 
 #include "TestConvolution.cpp"
 #include "TestTensor.cpp"
+#include "TestTorchConvolution.cpp"
+#include "TestTorchVGG.cpp"

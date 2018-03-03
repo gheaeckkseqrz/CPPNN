@@ -1,5 +1,7 @@
 #include "../Convolution.h"
 
+using namespace NN;
+
 TEST_CASE( "Convolution empty constructor", "[Convolution]" )
 {
   NN::Convolution c;

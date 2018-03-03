@@ -27,6 +27,7 @@ namespace NN
     cl::Buffer getSizesBuffer() const;
     size_t getOffset() const;
     size_t getNbElements() const;
+    bool dataEquals(Tensor const &o, float tolerance = 0.00001) const;
 
     Tensor &add(float value);
     Tensor &sub(float value);

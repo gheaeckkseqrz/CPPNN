@@ -47,7 +47,7 @@ namespace NN
     if (inputTensor == nullptr || inputTensor->getSizes().size() != 3)
       throw std::runtime_error("Convolution recieved invalid input");
     if (_filter->getSize(1) != inputTensor->getSize(0))
-      throw std::runtime_error("Convolution recieved invalid input for filter");
+	throw std::runtime_error("Convolution recieved invalid input for filter");
     std::vector<int> outputSizes(3, 0);
     outputSizes[0] = _filter->getSize(0);
     outputSizes[1] = (int)ceil((double)(inputTensor->getSize(1) - ((int)(_filter->getSize(2) / 2) * 2) + (_padH * 2)) / _dW);
