@@ -15,6 +15,7 @@ namespace NN
     Tensor();
     Tensor(std::vector<int> const &sizes);
     Tensor(std::vector<float> const &data);
+    Tensor(std::vector<int> const &sizes, std::vector<float> const &data);
     virtual ~Tensor();
 
     size_t getSize(int index) const;

@@ -25,6 +25,15 @@ namespace NN
     _offset = 0;
   }
 
+  Tensor::Tensor(std::vector<int> const &sizes, std::vector<float> const &data)
+  {
+    setSizes(sizes);
+    if (getNbElements() != data.size())
+      throw std::runtime_error("Tensor Constructor with invalid values");
+    _storage = std::make_shared<Storage<float>>(data);
+    _offset = 0;
+  }
+
   Tensor::~Tensor()
   {
   }

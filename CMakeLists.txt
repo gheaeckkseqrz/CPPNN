@@ -34,5 +34,6 @@ set_target_properties( ArtoNNLib PROPERTIES VERSION ${PROJECT_VERSION})
 set_target_properties( ArtoNNLib PROPERTIES SOVERSION 1)
 target_link_libraries( ArtoNNLib ${OpenCL_LIBRARY} )
 
-add_executable( TestNN main.cpp )
+add_executable( TestNN Tests/main.cpp )
 target_link_libraries( TestNN ArtoNNLib )
+
