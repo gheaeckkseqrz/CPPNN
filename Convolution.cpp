@@ -13,6 +13,8 @@ namespace NN
     _padH = 1;
     _dW = 1;
     _dH = 1;
+    _dilationW = 1;
+    _dilationH = 1;
   }
 
   Convolution::~Convolution()
@@ -55,7 +57,7 @@ namespace NN
 	_output.reset(new Tensor(outputSizes));
     std::shared_ptr<Tensor> outputTensor = std::dynamic_pointer_cast<Tensor>(_output);
     OpenCLFuncs::getInstance()->convolve(*inputTensor, *outputTensor, *_filter.get(), *_bias.get(),
-    					 _padW, _padH, _dW, _dH, 1, 1, outputTensor->getNbElements());
+    					 _padW, _padH, _dW, _dH, _dilationW, _dilationH, outputTensor->getNbElements());
     return _output;
   }
 }

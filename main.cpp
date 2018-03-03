@@ -14,7 +14,7 @@ int main(int ac, char **av)
   (void)av;
   std::cout << "Hello World" << std::endl;
 
-  std::shared_ptr<Sequential> net = std::dynamic_pointer_cast<Sequential>(TorchLoader::getInstance()->loadFile("../net.t7"));
+  std::shared_ptr<Sequential> net = std::dynamic_pointer_cast<Sequential>(TorchLoader::getInstance()->loadFile("../dilatedVGGReflectionPadding.t7"));
   std::cout << "Done loading net" << std::endl;
   std::shared_ptr<Tensor> image = std::dynamic_pointer_cast<Tensor>(TorchLoader::getInstance()->loadFile("../input.t7"));
   if (net == nullptr || image == nullptr)

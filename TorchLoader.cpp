@@ -4,6 +4,7 @@
 #include "TorchLoader.h"
 #include "TorchMaxPooling.h"
 #include "TorchNumber.h"
+#include "TorchReflectionPadding.h"
 #include "TorchRelu.h"
 #include "TorchSequential.h"
 #include "TorchStorage.h"
@@ -85,8 +86,8 @@ namespace NN
 	// 	loaded[objectId] = new MulConstant();
 	// else if (className == "nn.PixelShuffle")
 	// 	loaded[objectId] = new PixelShuffle();
-	// else if (className == "nn.SpatialReflectionPadding")
-	// 	loaded[objectId] = new ReflectionPadding();
+	else if (className == "nn.SpatialReflectionPadding")
+	  loaded[objectId] = (new TorchReflectionPadding())->loadFromFile(file, loaded);
 	else if (className == "nn.ReLU")
 	  loaded[objectId] = (new TorchRelu())->loadFromFile(file, loaded);
 	else if (className == "nn.Sequential")
@@ -99,10 +100,8 @@ namespace NN
 	// 	loaded[objectId] = new BatchNormalisation();
 	else if (className == "nn.SpatialMaxPooling")
 	  loaded[objectId] = (new TorchMaxPooling())->loadFromFile(file, loaded);
-	else if (className == "nn.SpatialConvolution")
+	else if (className == "nn.SpatialConvolution" || className == "nn.SpatialDilatedConvolution")
 	  loaded[objectId] = (new TorchConvolution())->loadFromFile(file, loaded);
-	// else if (className == "nn.SpatialDilatedConvolution")
-	// 	loaded[objectId] = new DilatedConvolution();
 	// else if (className == "nn.SpatialFullConvolution")
 	// 	loaded[objectId] = new FullConvolution();
 	// else if (className == "nn.SpatialUpSamplingNearest")

@@ -16,6 +16,7 @@ add_library( ArtoNNLib
   Module.cpp
   OpenCL.cpp
   OpenCLFuncs.cpp
+  ReflectionPadding.cpp
   Relu.cpp
   Sequential.cpp
   Tensor.cpp
@@ -24,6 +25,7 @@ add_library( ArtoNNLib
   TorchLoader.cpp
   TorchMaxPooling.cpp
   TorchNumber.cpp
+  TorchReflectionPadding.cpp
   TorchRelu.cpp
   TorchSequential.cpp
   TorchStorage.cpp
@@ -37,3 +39,5 @@ target_link_libraries( ArtoNNLib ${OpenCL_LIBRARY} )
 add_executable( TestNN Tests/main.cpp )
 target_link_libraries( TestNN ArtoNNLib )
 
+add_executable( runNN main.cpp )
+target_link_libraries( runNN ArtoNNLib )

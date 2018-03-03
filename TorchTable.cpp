@@ -14,7 +14,6 @@ namespace NN
 
   TorchTable::~TorchTable()
   {
-    std::cout << "TorchTable destructor " << _name << std::endl;
   }
 
   std::shared_ptr<TorchObject> TorchTable::loadFromFile(std::ifstream &file, std::map<int, std::shared_ptr<TorchObject>> &loaded)

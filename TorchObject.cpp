@@ -11,7 +11,6 @@ namespace NN
 
   TorchObject::~TorchObject()
   {
-    std::cout << "TorchObject Destructor " << _name << std::endl;
   }
 
   TorchObject::TorchType TorchObject::getType() const

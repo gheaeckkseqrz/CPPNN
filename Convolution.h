@@ -23,6 +23,8 @@ namespace NN
     int _padH;
     int _dW;
     int _dH;
+    int _dilationW;
+    int _dilationH;
   };
 }
 

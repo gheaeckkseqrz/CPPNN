@@ -23,6 +23,10 @@ namespace NN
     _padH = (int)std::dynamic_pointer_cast<TorchNumber>(table->get("padH"))->value();
     _dW = (int)std::dynamic_pointer_cast<TorchNumber>(table->get("dW"))->value();
     _dH = (int)std::dynamic_pointer_cast<TorchNumber>(table->get("dH"))->value();
+    if (table->get("dilationW") != nullptr)
+      _dilationW = (int)std::dynamic_pointer_cast<TorchNumber>(table->get("dilationW"))->value();
+    if (table->get("dilationH") != nullptr)
+      _dilationH = (int)std::dynamic_pointer_cast<TorchNumber>(table->get("dilationH"))->value();
     return std::shared_ptr<TorchObject>(this);
   }
 }
