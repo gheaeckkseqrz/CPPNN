@@ -145,6 +145,8 @@
 #ifndef CL_HPP_
 #define CL_HPP_
 
+#define CL_USE_DEPRECATED_OPENCL_1_2_APIS
+
 #ifdef _WIN32
 
 #include <malloc.h>
@@ -227,6 +229,7 @@
 
 #include <cstring>
 
+#pragma GCC diagnostic ignored "-Wignored-attributes"
 
 /*! \namespace cl
  *

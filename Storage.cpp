@@ -13,7 +13,7 @@ namespace NN
   Storage<T>::Storage(size_t size)
   {
     _size = size;
-    _buffer = OpenCL::getInstance()->createBuffer<T>(_size * sizeof(T));
+    _buffer = OpenCL::getInstance()->createBuffer<T>(_size);
   }
 
   template<class T>
