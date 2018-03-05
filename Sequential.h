@@ -13,6 +13,7 @@ namespace NN
     Sequential();
 
     virtual std::shared_ptr<Input> forward(std::shared_ptr<Input> const &input);
+    std::shared_ptr<Module> get(unsigned int index) const;
 
  protected:
     std::vector<std::shared_ptr<Module>> _modules;
