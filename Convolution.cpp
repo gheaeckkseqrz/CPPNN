@@ -64,7 +64,8 @@ namespace NN
     unsigned int totalNbOfWorkItems = outputTensor->getSize(0) * nbWorkgroupPerChannel * workGroupSize;
     OpenCLFuncs::getInstance()->convolve(*inputTensor, *outputTensor, *_filter.get(), *_bias.get(),
     					 _padW, _padH, _dW, _dH, _dilationW, _dilationH,
-					 workGroupSize, totalNbOfWorkItems, workGroupSize);
+					 _filter->getNbElements() / _filter->getSize(0), workGroupSize,
+					 totalNbOfWorkItems, workGroupSize);
     return _output;
   }
 }

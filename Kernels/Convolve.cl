@@ -1,6 +1,6 @@
 kernel void convolve(Tensor input, Tensor output, Tensor filter, Tensor bias,
 		     int padW, int padH, float dW, float dH, int dilationW, int dilationH,
-		     int workgroupSize)
+		     __local float *filterCache, int workgroupSize)
 {
     int globalPos = get_global_id(0);
     int localPos = get_local_id(0);
@@ -18,6 +18,16 @@ kernel void convolve(Tensor input, Tensor output, Tensor filter, Tensor bias,
       int y = channelPos / output_dims[2];
       int x = channelPos % output_dims[2];
 
+      /* CACHING THE CONV FILTER IN LOCAL MEMORY */
+      int filterIdx[4];
+      filterIdx[0] = c; // Output channel
+      filterIdx[1] = 0; // Input channel
+      filterIdx[2] = 0;
+      filterIdx[3] = 0;
+      int filterIndex = tensorIndex(filter_dims, filterIdx, 4, filter_offset);
+      async_work_group_copy(filterCache, &filter_data[filterIndex], filter_dims[1] * filter_dims[2] * filter_dims[3], 0);
+      barrier(CLK_LOCAL_MEM_FENCE);
+
       if (x < output_dims[2] && y < output_dims[1])
 	{
 	  int outputCoordinates[3];
@@ -30,22 +40,22 @@ kernel void convolve(Tensor input, Tensor output, Tensor filter, Tensor bias,
 	  for (int d = 0 ; d < filter_dims[1] ; ++d)
 	    {
 	      for (int i = 0 ; i  < filter_dims[2] ; ++i)
-		{
-		  for (int j = 0 ; j  < filter_dims[3] ; ++j)
-		    {
-		      int filterIdx[4];
-		      filterIdx[0] = c; // Output channel
-		      filterIdx[1] = d; // Input channel
-		      filterIdx[2] = j;
-		      filterIdx[3] = i;
-		      float kernelWeight = sampleTensor(filter_data, filter_dims, filterIdx, 4, filter_offset);
-		      float inputValue = sample3DTensorWithPadding(input_data, input_dims, d,
-								   (float)x * dW + (i * dilationW) - padW,
-								   (float)y * dH + (j * dilationH) - padH,
-								   input_offset);
-		      sum += (kernelWeight * inputValue);
-		    }
-		}
+	  	{
+	  	  for (int j = 0 ; j  < filter_dims[3] ; ++j)
+	  	    {
+	  	      int filterIdx[3];
+	  	      filterIdx[0] = d; // Input channel
+	  	      filterIdx[1] = j;
+	  	      filterIdx[2] = i;
+	  	      int kernelIndex = tensorIndex(&filter_dims[1], filterIdx, 3, 0);
+	  	      float kernelWeight = filterCache[kernelIndex];
+	  	      float inputValue = sample3DTensorWithPadding(input_data, input_dims, d,
+	  	      						   (float)x * dW + (i * dilationW) - padW,
+	  	      						   (float)y * dH + (j * dilationH) - padH,
+	  	      						   input_offset);
+	  	      sum += (kernelWeight * inputValue);
+	  	    }
+	  	}
 	    }
 	  int biasIdx[1];
 	  biasIdx[0] = c;

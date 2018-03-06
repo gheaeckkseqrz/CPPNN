@@ -27,12 +27,29 @@ def expandTensorSetArg(tensorName, i):
     s += "kernel.setArg(" + str(i+3) + ", (cl_int)" + tensorName+  ".getOffset());\n"
     return s
 
-def getParameterTypeAndName(parameter):
+def getCPPParameterTypeAndName(parameter):
     s = parameter.split(' ')
     for i in range(len(s)):
         s[i] = filter(lambda a: a!= '\n' and a != '\t', s[i])
     s = filter(lambda a: a!= '', s)
     if (s[0] == "__global"):
+        s.pop(0)
+    if (s[0] == "__local"):
+        s.pop(0)
+        s[0] = "int"
+        if s[1][0] == '*':
+            s[1] = s[1][1:]
+    return s[0], s[1]
+
+def getCLParameterTypeAndName(parameter):
+    s = parameter.split(' ')
+    for i in range(len(s)):
+        s[i] = filter(lambda a: a!= '\n' and a != '\t', s[i])
+    s = filter(lambda a: a!= '', s)
+    if (s[0] == "__global"):
+        s.pop(0)
+    if (s[0] == "__local"):
+        s[1] = "__local " + s[1]
         s.pop(0)
     return s[0], s[1]
 
@@ -55,7 +72,7 @@ def generateFunction(filePath):
         kernel += returnType + " "
         kernel += functionName + "("
         for p in parameters.split(','):
-            parameterType, parameterName = getParameterTypeAndName(p)
+            parameterType, parameterName = getCLParameterTypeAndName(p)
             if parameterType == "Tensor":
                 kernel += expandTensorParameter(parameterName)
             else:
@@ -67,7 +84,7 @@ def generateFunction(filePath):
         function  = "void "
         function += "OpenCLFuncs::" + functionName + "("
         for p in parameters.split(','):
-            parameterType, parameterName = getParameterTypeAndName(p)
+            parameterType, parameterName = getCPPParameterTypeAndName(p)
             if parameterType == "Tensor":
                 parameterType = "Tensor const &"
             function += parameterType + " " +  parameterName + ", "
@@ -78,12 +95,17 @@ def generateFunction(filePath):
         function += "cl::Kernel kernel = cl::Kernel(program, \"" + functionName + "\");\n"
         i = 0
         for p in parameters.split(','):
-            parameterType, parameterName = getParameterTypeAndName(p)
-            if parameterType == "Tensor":
-                function += expandTensorSetArg(parameterName, i)
+            CPPparameterType, CPPparameterName = getCPPParameterTypeAndName(p)
+            CLparameterType, CLparameterName = getCLParameterTypeAndName(p)
+            if CPPparameterType == "Tensor":
+                function += expandTensorSetArg(CPPparameterName, i)
                 i += 4
+            elif CLparameterType.startswith("__local"):
+                function += "kernel.setArg(" + str(i) + ", cl::Local(" + CPPparameterName + " * sizeof(cl_float)));\n"
+                function += "std::cout << \"Allocating local memory of size \" << " + CPPparameterName + " << std::endl;\n"
+                i += 1
             else:
-                function += "kernel.setArg(" + str(i) + ", " + toCLType(parameterType) + parameterName + ");\n"
+                function += "kernel.setArg(" + str(i) + ", " + toCLType(CPPparameterType) + CPPparameterName + ");\n"
                 i += 1
         function += "clock_t begin = clock();\n"
         function += "std::cout << \"Running kernel [" + functionName + "] with \" << nbThread << \" threads - (groupSize : \" << (int)groupSize << \") \";\n"
@@ -94,7 +116,7 @@ def generateFunction(filePath):
 
         prototype = "void " + functionName + "("
         for p in parameters.split(','):
-            parameterType, parameterName = getParameterTypeAndName(p)
+            parameterType, parameterName = getCPPParameterTypeAndName(p)
             if parameterType == "Tensor":
                 parameterType = "Tensor const &"
             prototype += parameterType + " " + parameterName + ", "
