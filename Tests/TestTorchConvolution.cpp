@@ -9,7 +9,6 @@ TEST_CASE( "TorchConvolution 1 In 1 Out No Padding No Bias", "[TorchConvolution]
   std::shared_ptr<Tensor> expected = std::dynamic_pointer_cast<Tensor>(TorchLoader::getInstance()->loadFile("../Tests/TestData/convolution1in1outNoPaddingNoBiasResult.t7"));
   std::shared_ptr<Convolution> conv = std::dynamic_pointer_cast<Convolution>(TorchLoader::getInstance()->loadFile("../Tests/TestData/convolution1in1outNoPaddingNoBias.t7"));
   std::shared_ptr<Tensor> result = std::dynamic_pointer_cast<Tensor>(conv->forward(input));
-
   REQUIRE(expected->getSizes() == result->getSizes());
   REQUIRE(result->dataEquals(*(expected.get()), 0.0001));
 }

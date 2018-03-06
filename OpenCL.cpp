@@ -86,9 +86,20 @@ cl::Program OpenCL::buildProgramFromFile(std::string const &path)
   return buildProgramFromSource(source);
 }
 
-void OpenCL::runKernel(cl::Kernel &kernel, unsigned int workItems)
+void OpenCL::runKernel(cl::Kernel &kernel, unsigned int workItems, unsigned int groupSize)
 {
-  int ret = _queue.enqueueNDRangeKernel(kernel, cl::NullRange, cl::NDRange(workItems), cl::NullRange);
+
+  size_t result;
+
+  _device.getInfo(CL_DEVICE_LOCAL_MEM_SIZE, &result);
+  // std::cout << "Max LocalMemory size for kernel is " << result << std::endl;
+
+  kernel.getWorkGroupInfo(_device, CL_KERNEL_WORK_GROUP_SIZE, &result);
+  // std::cout << "Max WorkGroup size for kernel is " << result << std::endl;
+
+  cl::NDRange global = cl::NDRange(workItems);
+  cl::NDRange local = (groupSize == -1) ?  cl::NullRange : cl::NDRange(groupSize);
+  int ret = _queue.enqueueNDRangeKernel(kernel, cl::NullRange, global, local);
   _queue.finish();
   if (ret != CL_SUCCESS)
     std::cerr << "runKernel returned error " << ret << std::endl;

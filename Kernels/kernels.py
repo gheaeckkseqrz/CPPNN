@@ -71,7 +71,7 @@ def generateFunction(filePath):
             if parameterType == "Tensor":
                 parameterType = "Tensor const &"
             function += parameterType + " " +  parameterName + ", "
-        function += "size_t nbThread)\n"
+        function += "size_t nbThread, size_t groupSize)\n"
         function += "{\n"
         function += "std::string kernelSource = R\"RAW(" + kernel + ")RAW\"; \n"
         function += "cl::Program program = OpenCL::getInstance()->buildProgramFromSource(kernelSource);\n"
@@ -86,8 +86,8 @@ def generateFunction(filePath):
                 function += "kernel.setArg(" + str(i) + ", " + toCLType(parameterType) + parameterName + ");\n"
                 i += 1
         function += "clock_t begin = clock();\n"
-        function += "std::cout << \"Running kernel [" + functionName + "] with \" << nbThread << \" threads - \";\n"
-        function += "OpenCL::getInstance()->runKernel(kernel, nbThread);\n"
+        function += "std::cout << \"Running kernel [" + functionName + "] with \" << nbThread << \" threads - (groupSize : \" << (int)groupSize << \") \";\n"
+        function += "OpenCL::getInstance()->runKernel(kernel, nbThread, groupSize);\n"
         function += "clock_t end = clock();\n"
         function += "std::cout << double(end - begin) / CLOCKS_PER_SEC << \" sec\" << std::endl;\n"
         function += "}\n"
@@ -98,7 +98,7 @@ def generateFunction(filePath):
             if parameterType == "Tensor":
                 parameterType = "Tensor const &"
             prototype += parameterType + " " + parameterName + ", "
-        prototype += "size_t nbThread);\n"
+        prototype += "size_t nbThread, size_t groupSize = -1);\n"
 
         return prototype, function
 

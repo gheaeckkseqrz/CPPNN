@@ -11,8 +11,10 @@ TEST_CASE( "VGG", "[TorchVGG]" )
 
   for (int i(0) ; i < 30 ; ++i)
     {
-      std::shared_ptr<Tensor> result = std::dynamic_pointer_cast<Tensor>(vgg->get(i));
-      std::shared_ptr<Tensor> expected = std::dynamic_pointer_cast<Tensor>(TorchLoader::getInstance()->loadFile("../Tests/TestData/vggLayer" + std::to_string(i) + "Output.t7"));
-      REQUIRE(result->dataEquals(*(expected.get()), 0.0001));
+      std::shared_ptr<Tensor> result = std::dynamic_pointer_cast<Tensor>(vgg->get(i)->getOutput());
+      std::shared_ptr<Tensor> expected = std::dynamic_pointer_cast<Tensor>(TorchLoader::getInstance()->loadFile("../Tests/TestData/vggLayer" + std::to_string(i+1) + "Output.t7"));
+      REQUIRE(result != nullptr);
+      REQUIRE(expected != nullptr);
+      REQUIRE(result->dataEquals(*(expected.get()), 0.0002));
     }
 }

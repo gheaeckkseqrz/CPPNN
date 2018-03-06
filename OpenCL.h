@@ -37,7 +37,7 @@ class OpenCL
   cl::Program buildProgramFromSource(std::string const &source);
   cl::Program buildProgramFromSource(std::vector<char> const &source);
   cl::Program buildProgramFromFile(std::string const &path);
-  void runKernel(cl::Kernel &kernel, unsigned int workItems);
+  void runKernel(cl::Kernel &kernel, unsigned int workItems, unsigned int groupSize = -1);
 
  private:
   cl::Device getOpenCLDevice();
@@ -48,6 +48,7 @@ class OpenCL
   cl::Context _context;
   cl::Device _device;
   cl::CommandQueue _queue;
+  unsigned int _maxGroupSize;
 };
 
 #endif

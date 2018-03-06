@@ -5,6 +5,8 @@ inline int tensorIndex(__global  int *t_dims, int *indexes, int t_nb_dim, int of
   int stride = 1;
   for (int i=t_nb_dim-1 ; i >= 0 ; --i)
     {
+      if (indexes[i] < 0 || indexes[i] >= t_dims[i])
+	printf("[tensorIndex] Sampling outside of tensor. Dim : %d, Dimsize %d, index : %d\n", i, t_dims[i], indexes[i]);
       index += indexes[i] * stride;
       stride *= t_dims[i];
     }

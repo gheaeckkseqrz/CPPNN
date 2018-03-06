@@ -1,13 +1,16 @@
 require 'nn'
 require 'loadcaffe'
 
-local proto_file = "/Users/wilmot_p/PROG/StyleTransfert/models/VGG_ILSVRC_19_layers_deploy.prototxt"
-local model_file = "/Users/wilmot_p/PROG/StyleTransfert/models/VGG_ILSVRC_19_layers.caffemodel"
+local proto_file = "/home/wilmot_p/.models/VGG_ILSVRC_19_layers_deploy.prototxt"
+local model_file = "/home/wilmot_p/.models/VGG_ILSVRC_19_layers.caffemodel"
 local vgg = loadcaffe.load(proto_file, model_file, 'nn'):float()
 while vgg:get(#vgg).name ~= 'relu5_1' do vgg:remove(#vgg) end
 for i=1, #vgg do
    vgg:get(i).gradInput = nil
    vgg:get(i).gradBias = nil
+   if torch.type(vgg:get(i)) == "nn.ReLU" then
+      vgg:get(i).inplace = false
+   end
 end
 torch.save('vgg.t7', vgg:float(), 'ascii')
 

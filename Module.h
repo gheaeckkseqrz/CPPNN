@@ -12,6 +12,7 @@ namespace NN
     Module();
 
     virtual std::shared_ptr<Input> forward(std::shared_ptr<Input> const &input) = 0;
+    std::shared_ptr<Input> getOutput() const;
 
   protected:
     std::shared_ptr<Input> _output;

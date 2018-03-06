@@ -56,8 +56,15 @@ namespace NN
     if (_output == nullptr || std::dynamic_pointer_cast<Tensor>(_output)->getSizes() != outputSizes)
 	_output.reset(new Tensor(outputSizes));
     std::shared_ptr<Tensor> outputTensor = std::dynamic_pointer_cast<Tensor>(_output);
+    outputTensor->fill(42);
+
+    unsigned int workGroupSize = 1024;
+    unsigned int outputChannelSize = outputTensor->getNbElements() / outputTensor->getSize(0);
+    unsigned int nbWorkgroupPerChannel = (outputChannelSize / workGroupSize) + ((outputChannelSize % workGroupSize) == 0 ? 0 : 1);
+    unsigned int totalNbOfWorkItems = outputTensor->getSize(0) * nbWorkgroupPerChannel * workGroupSize;
     OpenCLFuncs::getInstance()->convolve(*inputTensor, *outputTensor, *_filter.get(), *_bias.get(),
-    					 _padW, _padH, _dW, _dH, _dilationW, _dilationH, outputTensor->getNbElements());
+    					 _padW, _padH, _dW, _dH, _dilationW, _dilationH,
+					 workGroupSize, totalNbOfWorkItems, workGroupSize);
     return _output;
   }
 }
