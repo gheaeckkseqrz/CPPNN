@@ -5,27 +5,27 @@
 namespace NN
 {
 
-  Tensor::Tensor()
+  Tensor::Tensor(cl_mem_flags flags)
   {
     setSizes(std::vector<int>(1, 0));
     _offset = 0;
   }
 
-  Tensor::Tensor(std::vector<int> const &sizes)
+  Tensor::Tensor(std::vector<int> const &sizes, cl_mem_flags flags)
   {
     setSizes(sizes);
-    _storage = std::make_shared<Storage<float>>(getNbElements());
+    _storage = std::make_shared<Storage<float>>(getNbElements(), flags);
     _offset = 0;
   }
 
-  Tensor::Tensor(std::vector<float> const &data)
+  Tensor::Tensor(std::vector<float> const &data, cl_mem_flags flags)
   {
-    _storage = std::make_shared<Storage<float>>(data);
+    _storage = std::make_shared<Storage<float>>(data, flags);
     setSizes(std::vector<int>(1, data.size()));
     _offset = 0;
   }
 
-  Tensor::Tensor(std::vector<int> const &sizes, std::vector<float> const &data)
+  Tensor::Tensor(std::vector<int> const &sizes, std::vector<float> const &data, cl_mem_flags flags)
   {
     setSizes(sizes);
     if (getNbElements() != data.size())

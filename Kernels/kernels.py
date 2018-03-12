@@ -13,8 +13,9 @@ def getUtilitiesFunctions():
     with open("Tensor.h") as f:
         return f.read()
 
-def expandTensorParameter(tensorName):
-    s = "__global float *" + tensorName + "_data, "
+def expandTensorParameter(tensorName, addressSpace):
+    addressSpace = "__global" if addressSpace == "" else addressSpace
+    s = addressSpace + " float *" + tensorName + "_data, "
     s += "__global int * " + tensorName + "_dims, "
     s += "int " + tensorName + "_nbDims, "
     s += "int " + tensorName + "_offset, "
@@ -32,7 +33,7 @@ def getCPPParameterTypeAndName(parameter):
     for i in range(len(s)):
         s[i] = filter(lambda a: a!= '\n' and a != '\t', s[i])
     s = filter(lambda a: a!= '', s)
-    if (s[0] == "__global"):
+    if (s[0] == "__global" or s[0] == "__constant"):
         s.pop(0)
     if (s[0] == "__local"):
         s.pop(0)
@@ -41,17 +42,16 @@ def getCPPParameterTypeAndName(parameter):
             s[1] = s[1][1:]
     return s[0], s[1]
 
-def getCLParameterTypeAndName(parameter):
+def getCLParameterSpaceAndTypeAndName(parameter):
+    addressSpace = ""
     s = parameter.split(' ')
     for i in range(len(s)):
         s[i] = filter(lambda a: a!= '\n' and a != '\t', s[i])
     s = filter(lambda a: a!= '', s)
-    if (s[0] == "__global"):
+    if (s[0] == "__global" or s[0] == "__local" or s[0] == "__constant"):
+        addressSpace = s[0]
         s.pop(0)
-    if (s[0] == "__local"):
-        s[1] = "__local " + s[1]
-        s.pop(0)
-    return s[0], s[1]
+    return addressSpace, s[0], s[1]
 
 def parsePrototype(content):
     res = parse("kernel {return} {name}({parameters}){body}", content)
@@ -72,11 +72,11 @@ def generateFunction(filePath):
         kernel += returnType + " "
         kernel += functionName + "("
         for p in parameters.split(','):
-            parameterType, parameterName = getCLParameterTypeAndName(p)
+            parameterSpace, parameterType, parameterName = getCLParameterSpaceAndTypeAndName(p)
             if parameterType == "Tensor":
-                kernel += expandTensorParameter(parameterName)
+                kernel += expandTensorParameter(parameterName, parameterSpace)
             else:
-                kernel += parameterType + " " +  parameterName + ", "
+                kernel += parameterSpace + " " + parameterType + " " +  parameterName + ", "
         kernel = kernel[:-2] # Remove last coma
         kernel += ")"
         kernel += body
@@ -96,11 +96,11 @@ def generateFunction(filePath):
         i = 0
         for p in parameters.split(','):
             CPPparameterType, CPPparameterName = getCPPParameterTypeAndName(p)
-            CLparameterType, CLparameterName = getCLParameterTypeAndName(p)
+            CLparameterSpace, CLparameterType, CLparameterName = getCLParameterSpaceAndTypeAndName(p)
             if CPPparameterType == "Tensor":
                 function += expandTensorSetArg(CPPparameterName, i)
                 i += 4
-            elif CLparameterType.startswith("__local"):
+            elif CLparameterSpace == "__local":
                 function += "kernel.setArg(" + str(i) + ", cl::Local(" + CPPparameterName + " * sizeof(cl_float)));\n"
                 function += "std::cout << \"Allocating local memory of size \" << " + CPPparameterName + " << std::endl;\n"
                 i += 1

@@ -23,7 +23,7 @@ namespace NN
 
   void Convolution::setFilter(std::shared_ptr<Tensor> const &filter, std::shared_ptr<Tensor> const &bias)
   {
-    _filter = filter;
+    _filter = std::make_shared<Tensor>(filter->getSizes(), filter->read(), CL_MEM_READ_ONLY);
     if (bias == nullptr)
       {
 	std::vector<float> defaultBias(_filter->getSizes()[0], 0);
@@ -62,9 +62,9 @@ namespace NN
     unsigned int outputChannelSize = outputTensor->getNbElements() / outputTensor->getSize(0);
     unsigned int nbWorkgroupPerChannel = (outputChannelSize / workGroupSize) + ((outputChannelSize % workGroupSize) == 0 ? 0 : 1);
     unsigned int totalNbOfWorkItems = outputTensor->getSize(0) * nbWorkgroupPerChannel * workGroupSize;
-    OpenCLFuncs::getInstance()->convolve(*inputTensor, *outputTensor, *_filter.get(), *_bias.get(),
-    					 _padW, _padH, _dW, _dH, _dilationW, _dilationH,
-					 _filter->getNbElements() / _filter->getSize(0), workGroupSize,
+    OpenCLFuncs::getInstance()->convolve(*inputTensor, *outputTensor, *_filter, *_bias,
+					 _padW, _padH, _dW, _dH, _dilationW, _dilationH,
+					 workGroupSize,
 					 totalNbOfWorkItems, workGroupSize);
     return _output;
   }

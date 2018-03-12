@@ -9,9 +9,9 @@ namespace NN
   template<class T> class Storage
   {
   public:
-    Storage();
-    Storage(size_t size);
-    Storage(std::vector<T> const &data);
+    /* Storage(cl_mem_flags flags =  CL_MEM_READ_WRITE ); */
+    Storage(size_t size, cl_mem_flags flags =  CL_MEM_READ_WRITE );
+    Storage(std::vector<T> const &data, cl_mem_flags flags =  CL_MEM_READ_WRITE );
     virtual ~Storage() { }
 
     cl::Buffer getBuffer() const;

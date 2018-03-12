@@ -13,10 +13,10 @@ namespace NN
   class Tensor : public Input
   {
   public:
-    Tensor();
-    Tensor(std::vector<int> const &sizes);
-    Tensor(std::vector<float> const &data);
-    Tensor(std::vector<int> const &sizes, std::vector<float> const &data);
+    Tensor(cl_mem_flags flags =  CL_MEM_READ_WRITE);
+    Tensor(std::vector<int> const &sizes, cl_mem_flags flags =  CL_MEM_READ_WRITE );
+    Tensor(std::vector<float> const &data, cl_mem_flags flags =  CL_MEM_READ_WRITE );
+    Tensor(std::vector<int> const &sizes, std::vector<float> const &data, cl_mem_flags flags =  CL_MEM_READ_WRITE );
     virtual ~Tensor();
 
     size_t getSize(int index) const;

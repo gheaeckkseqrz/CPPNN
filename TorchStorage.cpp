@@ -6,6 +6,7 @@
 namespace NN
 {
   TorchStorage::TorchStorage()
+    :Storage(0)
   {
   }
 

@@ -2,22 +2,24 @@
 
 namespace NN
 {
-  template<class T>
-  Storage<T>::Storage()
-  {
-    _size = 0;
-    _buffer = 0;
-  }
+  // template<class T>
+  // Storage<T>::Storage(cl_mem_flags flags)
+  // {
+  //   _size = 0;
+  //   _buffer = 0;
+  // }
 
   template<class T>
-  Storage<T>::Storage(size_t size)
+  Storage<T>::Storage(size_t size, cl_mem_flags flags)
   {
     _size = size;
-    _buffer = OpenCL::getInstance()->createBuffer<T>(_size);
+    _buffer = 0;
+    if (_size > 0)
+      _buffer = OpenCL::getInstance()->createBuffer<T>(_size);
   }
 
   template<class T>
-  Storage<T>::Storage(std::vector<T> const &data)
+  Storage<T>::Storage(std::vector<T> const &data, cl_mem_flags flags)
   {
     _buffer = OpenCL::getInstance()->toGPU<T>(data);
     _size = data.size();
