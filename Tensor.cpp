@@ -54,6 +54,14 @@ namespace NN
     _sizesStorage = std::unique_ptr<Storage<int>>(new Storage<int>(sizes));
   }
 
+  void Tensor::flatten()
+  {
+    std::vector<int> newSizes;
+    newSizes.push_back(getSize(0));
+    newSizes.push_back(getNbElements() / getSize(0));
+    setSizes(newSizes);
+  }
+
   std::vector<float> Tensor::read() const
   {
     return _storage->read();
@@ -160,13 +168,33 @@ namespace NN
     return *this;
   }
 
+  std::string Tensor::print(bool data) const
+  {
+    std::string s = "Tensor [";
+    std::vector<int> sizes = getSizes();
+    for (int i(0) ; i < sizes.size() ; ++i)
+      s += std::to_string(sizes[i]) + ((i < sizes.size() - 1) ? ", " : "");
+    s += "] - Offset : " + std::to_string(getOffset());
+
+    if (data)
+      {
+	s += "\n{\n";
+	std::vector<float> d = read();
+	for (int i(0) ; i < d.size() ; ++i)
+	  {
+	    s += std::to_string(d[i]) + ", ";
+	    if (i != 0 && ((i+1) % (getNbElements() / getSize(0))) == 0)
+	      s += '\n';
+	  }
+	s += "\n}\n";
+      }
+
+    return s;
+  }
+
   std::ostream &operator<<(std::ostream &s, Tensor const &t)
   {
-    s << "Tensor [";
-    std::vector<int> sizes = t.getSizes();
-    for (int i(0) ; i < sizes.size() ; ++i)
-      s << sizes[i] << ((i < sizes.size() - 1) ? ", " : "");
-    s << "] - Offset : " << t.getOffset();
+    s << t.print();
     return s;
   }
 

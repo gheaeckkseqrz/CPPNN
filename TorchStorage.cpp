@@ -23,7 +23,6 @@ namespace NN
 	values[i] = v;
       }
     _buffer = OpenCL::getInstance()->toGPU<float>(values);
-    assert(read() == values);
     return std::shared_ptr<TorchObject>(this);
   }
 }

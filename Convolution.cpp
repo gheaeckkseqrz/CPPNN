@@ -1,4 +1,5 @@
 #include <cmath>
+#include <clBLAS.h>
 #include <iostream>
 #include <stdexcept>
 
@@ -23,7 +24,7 @@ namespace NN
 
   void Convolution::setFilter(std::shared_ptr<Tensor> const &filter, std::shared_ptr<Tensor> const &bias)
   {
-    _filter = std::make_shared<Tensor>(filter->getSizes(), filter->read(), CL_MEM_READ_ONLY);
+    _filter = filter;
     if (bias == nullptr)
       {
 	std::vector<float> defaultBias(_filter->getSizes()[0], 0);
@@ -56,16 +57,43 @@ namespace NN
     if (_output == nullptr || std::dynamic_pointer_cast<Tensor>(_output)->getSizes() != outputSizes)
 	_output.reset(new Tensor(outputSizes));
     std::shared_ptr<Tensor> outputTensor = std::dynamic_pointer_cast<Tensor>(_output);
-    outputTensor->fill(42);
+    outputTensor->fill(0);
 
-    unsigned int workGroupSize = 1024;
-    unsigned int outputChannelSize = outputTensor->getNbElements() / outputTensor->getSize(0);
-    unsigned int nbWorkgroupPerChannel = (outputChannelSize / workGroupSize) + ((outputChannelSize % workGroupSize) == 0 ? 0 : 1);
-    unsigned int totalNbOfWorkItems = outputTensor->getSize(0) * nbWorkgroupPerChannel * workGroupSize;
-    OpenCLFuncs::getInstance()->convolve(*inputTensor, *outputTensor, *_filter, *_bias,
-					 _padW, _padH, _dW, _dH, _dilationW, _dilationH,
-					 workGroupSize,
-					 totalNbOfWorkItems, workGroupSize);
+    std::vector<int> im2colSizes({(int)(inputTensor->getSize(0) * _filter->getSize(2) * _filter->getSize(3)), (int)(outputTensor->getSize(1) * outputTensor->getSize(2))});
+    std::shared_ptr<Tensor> im2col = std::make_shared<Tensor>(im2colSizes);
+
+    OpenCLFuncs::getInstance()->convolutionImg2Cols(*inputTensor, *im2col, _filter->getSize(2), _filter->getSize(3), _padW, _padH, im2col->getNbElements());
+
+    // std::cout << im2col->print(true) << std::endl;
+
+    _filter->flatten();
+    outputTensor->flatten();
+
+    std::shared_ptr<Tensor> tA = _filter;
+    std::shared_ptr<Tensor> tB = im2col;
+    std::shared_ptr<Tensor> tC = outputTensor;
+
+    // std::cout << "A : " << *tA << std::endl;
+    // std::cout << "B : " << *tB << std::endl;
+    // std::cout << "C : " << *tC << std::endl;
+
+    cl_command_queue queue = OpenCL::getInstance()->getQueue()();
+
+    int M = tA->getSize(0);
+    int N = tB->getSize(1);
+    int K = tA->getSize(1);
+
+    int err = clblasSgemm(clblasRowMajor, clblasNoTrans, clblasNoTrans, M, N, K,
+			  1,
+			  tA->getBuffer()(), tA->getOffset(), tA->getSize(1),
+			  tB->getBuffer()(), tB->getOffset(), tB->getSize(1), 1,
+			  tC->getBuffer()(), tC->getOffset(), tC->getSize(1),
+			  1, &queue, 0, NULL, NULL);
+    if (err != CL_SUCCESS)
+    	printf("clblasSgemmEx() failed with %d\n", err);
+
+    outputTensor->setSizes(outputSizes);
+    outputTensor->add(*_bias);
     return _output;
   }
 }

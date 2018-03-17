@@ -1,4 +1,6 @@
+#include <cassert>
 #include <fstream>
+#include <clBLAS.h>
 #include "OpenCL.h"
 
 OpenCL *OpenCL::_instance = nullptr;
@@ -8,6 +10,7 @@ OpenCL::OpenCL()
   _device = getOpenCLDevice();
   _context = cl::Context({_device});
   _queue = cl::CommandQueue(_context, _device);
+  assert(clblasSetup() == 0);
 }
 
 OpenCL *OpenCL::getInstance()
@@ -35,7 +38,7 @@ cl::Device OpenCL::getOpenCLDevice()
   cl::Platform default_platform = all_platforms[0];
   std::cout << "Using platform: " << default_platform.getInfo<CL_PLATFORM_NAME>() << std::endl;
   std::vector<cl::Device> all_devices;
-  default_platform.getDevices(CL_DEVICE_TYPE_ALL, &all_devices);
+  default_platform.getDevices(CL_DEVICE_TYPE_GPU, &all_devices);
   if(all_devices.size() == 0)
     {
       std::cout<<" No devices found. Check OpenCL installation!\n";
@@ -103,4 +106,14 @@ void OpenCL::runKernel(cl::Kernel &kernel, unsigned int workItems, unsigned int 
   _queue.finish();
   if (ret != CL_SUCCESS)
     std::cerr << "runKernel returned error " << ret << std::endl;
+}
+
+cl::CommandQueue OpenCL::getQueue() const
+{
+  return _queue;
+}
+
+cl::Context OpenCL::getContext() const
+{
+  return _context;
 }

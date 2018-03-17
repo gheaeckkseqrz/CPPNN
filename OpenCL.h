@@ -39,6 +39,9 @@ class OpenCL
   cl::Program buildProgramFromFile(std::string const &path);
   void runKernel(cl::Kernel &kernel, unsigned int workItems, unsigned int groupSize = -1);
 
+  cl::CommandQueue getQueue() const;
+  cl::Context getContext() const;
+
  private:
   cl::Device getOpenCLDevice();
   std::vector<char> getFileContent(std::string const &path);
