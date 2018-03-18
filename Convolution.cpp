@@ -1,5 +1,6 @@
-#include <cmath>
 #include <clBLAS.h>
+#include <cmath>
+#include <ctime>
 #include <iostream>
 #include <stdexcept>
 
@@ -83,14 +84,20 @@ namespace NN
     int N = tB->getSize(1);
     int K = tA->getSize(1);
 
+    clock_t begin = clock();
+    cl_event event = NULL;
     int err = clblasSgemm(clblasRowMajor, clblasNoTrans, clblasNoTrans, M, N, K,
 			  1,
 			  tA->getBuffer()(), tA->getOffset(), tA->getSize(1),
 			  tB->getBuffer()(), tB->getOffset(), tB->getSize(1), 1,
 			  tC->getBuffer()(), tC->getOffset(), tC->getSize(1),
-			  1, &queue, 0, NULL, NULL);
+			  1, &queue, 0, NULL, &event);
+    clWaitForEvents(1, &event);
+    clReleaseEvent(event);
+    clock_t end = clock();
     if (err != CL_SUCCESS)
     	printf("clblasSgemmEx() failed with %d\n", err);
+    std::cout << "Running clblasSgemm " << double(end - begin) / CLOCKS_PER_SEC << " sec" << std::endl;
 
     outputTensor->setSizes(outputSizes);
     outputTensor->add(*_bias);
