@@ -4,7 +4,8 @@ set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_BUILD_TYPE Debug)
 find_package( OpenCL REQUIRED )
 find_package( clBLAS REQUIRED )
-include_directories( ${OpenCL_INCLUDE_DIRS} ${clBLAS_INCLUDE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/library)
+find_package( OpenCV REQUIRED )
+include_directories( ${OpenCL_INCLUDE_DIRS} ${clBLAS_INCLUDE_DIR} ${OpenCV_INCLUDE_DIRS} ${CMAKE_CURRENT_SOURCE_DIR}/library)
 add_custom_command(
   OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/library/OpenCLFuncs.cpp ${CMAKE_CURRENT_SOURCE_DIR}/library/OpenCLFuncs.h
   COMMAND source .env/bin/activate && python kernels.py
@@ -39,4 +40,7 @@ target_link_libraries( ArtoNNLib ${OpenCL_LIBRARY} ${CLBLAS_LIBRARIES} )
 
 add_executable( TestNN tests/main.cpp )
 target_link_libraries( TestNN ArtoNNLib )
+
+add_executable( Segmenter samples/Segmenter.cpp MatToTensor.cpp )
+target_link_libraries( Segmenter ArtoNNLib ${OpenCV_LIBS} )
 
