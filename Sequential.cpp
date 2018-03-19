@@ -14,7 +14,7 @@ namespace NN
     std::shared_ptr<Input> current = input;
     for (int i(0) ; i < _modules.size() ; ++i)
       {
-    	std::cout << "[Sequential " << i << " / " << _modules.size() << "]" << std::endl;
+    	std::cout << "[Sequential " << i + 1 << " / " << _modules.size() << "] - " << *(_modules[i]) << std::endl;
     	current = _modules[i]->forward(current);
       }
     return current;
@@ -25,5 +25,10 @@ namespace NN
     if (index >= _modules.size())
       throw std::runtime_error("Invalid index for Sequential::get()");
     return _modules[index];
+  }
+
+  std::string Sequential::print() const
+  {
+    return "Sequential";
   }
 }

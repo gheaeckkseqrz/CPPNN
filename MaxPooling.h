@@ -11,6 +11,7 @@ namespace NN
     MaxPooling();
 
     virtual std::shared_ptr<Input> forward(std::shared_ptr<Input> const &input);
+    virtual std::string print() const;
   };
 }
 

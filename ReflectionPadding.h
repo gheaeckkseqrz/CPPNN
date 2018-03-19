@@ -11,7 +11,8 @@ namespace NN
     ReflectionPadding();
 
     virtual std::shared_ptr<Input> forward(std::shared_ptr<Input> const &input);
-
+    virtual std::string print() const;
+    
   protected:
     int _padB;
     int _padT;

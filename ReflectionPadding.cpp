@@ -25,4 +25,9 @@ namespace NN
     OpenCLFuncs::getInstance()->reflectionPadding(*(inputTensor.get()), *(outputTensor.get()), _padL, _padR, _padT, _padB, outputTensor->getNbElements());
     return _output;
   }
+
+  std::string ReflectionPadding::print() const
+  {
+    return "ReflectionPadding [" + std::to_string(_padL) + "/" + std::to_string(_padR) + "/" + std::to_string(_padT) + "/" + std::to_string(_padB) + "]";
+  }
 }

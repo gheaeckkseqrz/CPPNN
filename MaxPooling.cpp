@@ -22,4 +22,9 @@ namespace NN
     OpenCLFuncs::getInstance()->maxPooling(*inputTensor, *outputTensor, outputTensor->getNbElements());
     return _output;
   }
+
+  std::string MaxPooling::print() const
+  {
+    return "MaxPooling";
+  }
 }

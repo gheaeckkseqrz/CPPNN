@@ -15,6 +15,7 @@ namespace NN
     void setFilter(std::shared_ptr<Tensor> const &filter, std::shared_ptr<Tensor> const &bias = nullptr);
     void setPadding(int padW, int padH);
     virtual std::shared_ptr<Input> forward(std::shared_ptr<Input> const &input);
+    virtual std::string print() const;
 
   protected:
     std::shared_ptr<Tensor> _filter;

@@ -52,8 +52,8 @@ namespace NN
 	throw std::runtime_error("Convolution recieved invalid input for filter");
     std::vector<int> outputSizes(3, 0);
     outputSizes[0] = _filter->getSize(0);
-    outputSizes[1] = (int)ceil((double)(inputTensor->getSize(1) - ((int)(_filter->getSize(2) / 2) * 2) + (_padH * 2)) / _dW);
-    outputSizes[2] = (int)ceil((double)(inputTensor->getSize(2) - ((int)(_filter->getSize(3) / 2) * 2) + (_padW * 2)) / _dH);
+    outputSizes[1] = (int)floor((float)((inputTensor->getSize(1) + 2 * _padH - _dilationH * (_filter->getSize(2) - 1) - 1) / _dH)) + 1;
+    outputSizes[2] = (int)floor((float)((inputTensor->getSize(2) + 2 * _padW - _dilationW * (_filter->getSize(2) - 1) - 1) / _dW)) + 1;
 
     if (_output == nullptr || std::dynamic_pointer_cast<Tensor>(_output)->getSizes() != outputSizes)
 	_output.reset(new Tensor(outputSizes));
@@ -63,10 +63,7 @@ namespace NN
     std::vector<int> im2colSizes({(int)(inputTensor->getSize(0) * _filter->getSize(2) * _filter->getSize(3)), (int)(outputTensor->getSize(1) * outputTensor->getSize(2))});
     std::shared_ptr<Tensor> im2col = std::make_shared<Tensor>(im2colSizes);
 
-    OpenCLFuncs::getInstance()->convolutionImg2Cols(*inputTensor, *im2col, _filter->getSize(2), _filter->getSize(3), _padW, _padH, im2col->getNbElements());
-
-    // std::cout << im2col->print(true) << std::endl;
-
+    OpenCLFuncs::getInstance()->convolutionImg2Cols(*inputTensor, *im2col, _filter->getSize(2), _filter->getSize(3), _padW, _padH, _dilationW, _dilationH, im2col->getNbElements());
     _filter->flatten();
     outputTensor->flatten();
 
@@ -74,16 +71,10 @@ namespace NN
     std::shared_ptr<Tensor> tB = im2col;
     std::shared_ptr<Tensor> tC = outputTensor;
 
-    // std::cout << "A : " << *tA << std::endl;
-    // std::cout << "B : " << *tB << std::endl;
-    // std::cout << "C : " << *tC << std::endl;
-
     cl_command_queue queue = OpenCL::getInstance()->getQueue()();
-
     int M = tA->getSize(0);
     int N = tB->getSize(1);
     int K = tA->getSize(1);
-
     clock_t begin = clock();
     cl_event event = NULL;
     int err = clblasSgemm(clblasRowMajor, clblasNoTrans, clblasNoTrans, M, N, K,
@@ -102,5 +93,17 @@ namespace NN
     outputTensor->setSizes(outputSizes);
     outputTensor->add(*_bias);
     return _output;
+  }
+
+  std::string Convolution::print() const
+  {
+    if (_filter == nullptr)
+      return "Convolution - No filter";
+    std::string s = "Convolution " + std::to_string(_filter->getSize(1)) + " -> " + std::to_string(_filter->getSize(0));
+    s += " [" + std::to_string(_filter->getSize(3)) + "x" + std::to_string(_filter->getSize(2)) + "]";
+    s += " Padding [" + std::to_string(_padW) + "/" + std::to_string(_padH) + "]";
+    s += " Stride [" + std::to_string(_dW) + "/" + std::to_string(_dH) + "]";
+    s += " Dilation [" + std::to_string(_dilationW) + "/" + std::to_string(_dilationH) + "]";
+    return s;
   }
 }

@@ -19,4 +19,9 @@ namespace NN
     OpenCLFuncs::getInstance()->relu(*inputTensor, *outputTensor, outputTensor->getNbElements());
     return _output;
   }
+
+  std::string Relu::print() const
+  {
+    return "Relu";
+  }
 }

@@ -1,8 +1,8 @@
 require 'nn'
 require 'loadcaffe'
 
-local proto_file = "/Users/wilmot_p/PROG/StyleTransfert/models/VGG_ILSVRC_19_layers_deploy.prototxt"
-local model_file = "/Users/wilmot_p/PROG/StyleTransfert/models/VGG_ILSVRC_19_layers.caffemodel"
+local proto_file = "/home/wilmot_p/.models/VGG_ILSVRC_19_layers_deploy.prototxt"
+local model_file = "/home/wilmot_p/.models/VGG_ILSVRC_19_layers.caffemodel"
 local vgg = loadcaffe.load(proto_file, model_file, 'nn'):float()
 while vgg:get(#vgg).name ~= 'relu5_1' do vgg:remove(#vgg) end
 for i=1, #vgg do
@@ -36,4 +36,12 @@ torch.save('dilatedVGGReflectionPadding.t7', dilated:float(), 'ascii')
 vgg:forward(input)
 for i=1, #vgg do
    torch.save('vggLayer'..i..'Output.t7', vgg:get(i).output:float(), 'ascii')
+end
+
+vgg = nil
+collectgarbage()
+
+dilated:forward(input)
+for i=1, #dilated do
+   torch.save('dilatedVGGLayer'..i..'Output.t7', dilated:get(i).output:float(), 'ascii')
 end
