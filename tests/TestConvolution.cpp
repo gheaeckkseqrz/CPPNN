@@ -1,4 +1,4 @@
-#include "../Convolution.h"
+#include "Convolution.h"
 
 using namespace NN;
 
