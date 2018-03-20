@@ -5,7 +5,7 @@
 
 using namespace NN;
 
-#define SEGMENTER_NETWORK_PATH "/home/wilmot_p/DATA2/CPPNN3/tests/TestData/dilatedVGGReflectionPadding.t7"
+#define SEGMENTER_NETWORK_PATH "/Users/wilmot_p/PROG/CPPNN2/Tests/TestData/dilatedVGGReflectionPadding.t7"
 
 int main(int ac, char **av)
 {
@@ -17,10 +17,9 @@ int main(int ac, char **av)
     }
 
   std::shared_ptr<Tensor> t = tensorFromImage(av[1]);
-  saveTensorAsImage(t, "input.png");
-  t->sub(127);
+  t->sub(127); // -- Preprocessing image for VGG
   Segmenter s(SEGMENTER_NETWORK_PATH);
   std::shared_ptr<Tensor> mask = s.createRGBMask(t);
-  saveTensorAsImage(mask, "mask.png");
+  saveTensorAsImage(mask, "./mask.png");
   return 0;
 }

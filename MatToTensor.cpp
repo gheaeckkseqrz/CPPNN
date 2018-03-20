@@ -26,10 +26,10 @@ std::shared_ptr<NN::Tensor> tensorFromImage(std::string const &path)
 
 void saveTensorAsImage(std::shared_ptr<NN::Tensor> t, std::string const &path)
 {
-  std::cout << "T : " << *t << std::endl;
   std::shared_ptr<NN::Tensor> goodLayout = std::make_shared<NN::Tensor>(t->getSizes());
   NN::OpenCLFuncs::getInstance()->tensorToMat(*t, *goodLayout, goodLayout->getNbElements());
-  cv::Mat m(goodLayout->getSize(2), goodLayout->getSize(1), CV_32FC3, goodLayout->read().data());
+  std::vector<float> data = goodLayout->read();
+  cv::Mat m(goodLayout->getSize(2), goodLayout->getSize(1), CV_32FC3, data.data());
   try
     {
       cv::imwrite(path, m);

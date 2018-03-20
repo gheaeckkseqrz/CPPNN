@@ -46,7 +46,7 @@ namespace NN
   {
   }
 
-  size_t Tensor::getSize(int index) const
+  int Tensor::getSize(int index) const
   {
     return _sizes[index];
   }

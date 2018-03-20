@@ -20,7 +20,7 @@ namespace NN
     Tensor(Tensor const &o);
     virtual ~Tensor();
 
-    size_t getSize(int index) const;
+    int getSize(int index) const;
     std::vector<int> const &getSizes() const;
     void setSizes(std::vector<int> const &sizes);
     void flatten();
