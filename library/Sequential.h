@@ -14,10 +14,13 @@ namespace NN
 
     virtual std::shared_ptr<Input> forward(std::shared_ptr<Input> const &input);
     std::shared_ptr<Module> get(unsigned int index) const;
+    size_t size() const;
+    void setRetainPolicy(std::vector<bool> const &policy);
     virtual std::string print() const;
 
  protected:
     std::vector<std::shared_ptr<Module>> _modules;
+    std::vector<bool> _outputsRetainPolicy;
   };
 }
 

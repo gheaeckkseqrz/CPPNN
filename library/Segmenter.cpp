@@ -10,6 +10,10 @@ namespace NN
     _network = std::dynamic_pointer_cast<Sequential>(TorchLoader::getInstance()->loadFile(networkFile));
     _layers = std::vector<int>({2, 8, 14, 26, 38});
     _weights = std::vector<int>({1, 1, 1, 4, 1});
+    std::vector<bool> retainPolicy(_network->size(), false);
+    for (int l : _layers)
+      retainPolicy[l] = true;
+    _network->setRetainPolicy(retainPolicy);
   }
 
   std::shared_ptr<Tensor> Segmenter::createIndexesMask(std::shared_ptr<Tensor> input) const

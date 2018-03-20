@@ -1,3 +1,4 @@
+#include <cassert>
 #include <iostream>
 #include <stdexcept>
 
@@ -16,6 +17,8 @@ namespace NN
       {
     	std::cout << "[Sequential " << i + 1 << " / " << _modules.size() << "] - " << *(_modules[i]) << std::endl;
     	current = _modules[i]->forward(current);
+	if (!_outputsRetainPolicy.empty() && _outputsRetainPolicy[i] == false)
+	  _modules[i]->clearOutput();
       }
     return current;
   }
@@ -25,6 +28,17 @@ namespace NN
     if (index >= _modules.size())
       throw std::runtime_error("Invalid index for Sequential::get()");
     return _modules[index];
+  }
+
+  size_t Sequential::size() const
+  {
+    return _modules.size();
+  }
+
+  void Sequential::setRetainPolicy(std::vector<bool> const &policy)
+  {
+    assert(_modules.size() == policy.size());
+    _outputsRetainPolicy = policy;
   }
 
   std::string Sequential::print() const

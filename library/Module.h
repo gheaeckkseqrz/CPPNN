@@ -14,6 +14,7 @@ namespace NN
     virtual std::shared_ptr<Input> forward(std::shared_ptr<Input> const &input) = 0;
     virtual std::string print() const = 0;
     std::shared_ptr<Input> getOutput() const;
+    void clearOutput();
 
   protected:
     std::shared_ptr<Input> _output;

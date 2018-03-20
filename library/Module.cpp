@@ -11,6 +11,11 @@ namespace NN
     return _output;
   }
 
+  void Module::clearOutput()
+  {
+    _output = nullptr;
+  }
+
   std::ostream &operator<<(std::ostream &s, Module const &m)
   {
     s << m.print();
