@@ -12,7 +12,7 @@ namespace NN
     virtual ~Input() {}
 
   private:
-    Input(Input const &o) { std::cout << "Input private copy constructor" << std::endl; }
+    /* Input(Input const &o) { std::cout << "Input private copy constructor" << std::endl; } */
   };
 }
 

@@ -72,6 +72,15 @@ TEST_CASE( "Tensor Fill", "[Tensor]" )
     REQUIRE( Approx(computed[i]) == -8888 );
 }
 
+TEST_CASE( "Tensor Means", "[Tensor]" )
+{
+  std::vector<float> v({1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4, 5, 5, 5});
+  Tensor t(std::vector<int>({5, 3}), v);
+  Tensor m = t.means();
+  REQUIRE(m.getSizes() == std::vector<int>({5}));
+  REQUIRE(m.read() == std::vector<float>({1, 2, 3, 4, 5}));
+}
+
 TEST_CASE( "Tensor Data Equals", "[Tensor]" )
 {
   std::vector<float>     v1({1 , 2, 3, 4, 5, 6, 7 , 8   , 9   , 10, -5 , 0   });

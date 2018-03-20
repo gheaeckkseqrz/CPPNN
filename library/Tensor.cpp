@@ -34,6 +34,14 @@ namespace NN
     _offset = 0;
   }
 
+  Tensor::Tensor(Tensor const &o)
+  {
+    setSizes(o.getSizes());
+    _storage = o._storage;
+    _offset = o._offset;
+    std::cout << "[WARN] - Calling Tensor copy constructor" << std::endl;
+  }
+
   Tensor::~Tensor()
   {
   }
@@ -168,6 +176,28 @@ namespace NN
     return *this;
   }
 
+  Tensor &Tensor::copy(Tensor const &o)
+  {
+    assert(getNbElements() == o.getNbElements());
+    OpenCLFuncs::getInstance()->tensorCopy(*this, o, getNbElements());
+    return *this;
+  }
+
+  Tensor Tensor::means() const
+  {
+    Tensor res(std::vector<int>({getSize(0)}));
+    OpenCLFuncs::getInstance()->tensorMeans(*this, res, res.getNbElements());
+    return res;
+  }
+
+  Tensor Tensor::transpose() const
+  {
+    assert(getSizes().size() == 2);
+    Tensor res(std::vector<int>({getSize(1), getSize(0)}));
+    OpenCLFuncs::getInstance()->tensorTranspose(*this, res, res.getNbElements());
+    return res;
+  }
+
   std::string Tensor::print(bool data) const
   {
     std::string s = "Tensor [";
@@ -190,6 +220,25 @@ namespace NN
       }
 
     return s;
+  }
+
+  Tensor Tensor::operator[](int index)
+  {
+    std::vector<int> sizes(_sizes.begin() + 1, _sizes.end());
+    Tensor ret = Tensor(sizes);
+    ret._storage = _storage;
+    ret._offset = _offset + (index * ret.getNbElements());
+    return ret;
+  }
+
+  Tensor Tensor::operator[](std::pair<int, int> range)
+  {
+    std::vector<int> sizes(_sizes);
+    sizes[0] = range.second - range.first;
+    Tensor ret = Tensor(sizes);
+    ret._storage = _storage;
+    ret._offset = _offset + (range.first * (getNbElements() / _sizes[0]));
+    return ret;
   }
 
   std::ostream &operator<<(std::ostream &s, Tensor const &t)

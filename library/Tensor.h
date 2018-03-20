@@ -17,6 +17,7 @@ namespace NN
     Tensor(std::vector<int> const &sizes, cl_mem_flags flags = CL_MEM_READ_WRITE);
     Tensor(std::vector<float> const &data, cl_mem_flags flags = CL_MEM_READ_WRITE);
     Tensor(std::vector<int> const &sizes, std::vector<float> const &data, cl_mem_flags flags = CL_MEM_READ_WRITE);
+    Tensor(Tensor const &o);
     virtual ~Tensor();
 
     size_t getSize(int index) const;
@@ -39,8 +40,15 @@ namespace NN
     Tensor &mul(Tensor const &o);
     Tensor &div(Tensor const &o);
     Tensor &fill(float value);
+    Tensor &copy(Tensor const &o);
+
+    Tensor means() const;
+    Tensor transpose() const;
 
     std::string print(bool data = false) const;
+
+    Tensor operator[](int index);
+    Tensor operator[](std::pair<int, int> range);
 
   protected:
     size_t _offset;
@@ -56,8 +64,8 @@ namespace NN
 
   private:
     // Private copy constructor to avoid leaks
-    Tensor(Tensor &o) { std::cerr << "Something called the copy constructor" << std::endl; }
-    Tensor(Tensor const &o) { std::cerr << "Something called the copy constructor" << std::endl; }
+    /* Tensor(Tensor &o) { std::cerr << "Something called the copy constructor" << std::endl; } */
+    /* Tensor(Tensor const &o) { std::cerr << "Something called the copy constructor" << std::endl; } */
   };
 
   std::ostream &operator<<(std::ostream &s, Tensor const &t);

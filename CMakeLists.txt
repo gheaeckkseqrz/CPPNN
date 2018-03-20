@@ -14,12 +14,14 @@ add_custom_command(
   COMMENT "Generating code for OpenCLFuncs.")
 add_library( ArtoNNLib
   library/Convolution.cpp
+  library/Kmeans.cpp
   library/MaxPooling.cpp
   library/Module.cpp
   library/OpenCL.cpp
   library/OpenCLFuncs.cpp
   library/ReflectionPadding.cpp
   library/Relu.cpp
+  library/Segmenter.cpp
   library/Sequential.cpp
   library/Tensor.cpp
   library/TorchConvolution.cpp
