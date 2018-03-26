@@ -1,3 +1,4 @@
+#include <algorithm>
 #include "Tensor.h"
 #include "OpenCL.h"
 #include "OpenCLFuncs.h"
@@ -190,6 +191,18 @@ namespace NN
     return res;
   }
 
+  float Tensor::min() const
+  {
+    std::vector<float> vals = read();
+    return *std::min_element(vals.begin(), vals.end());
+  }
+
+  float Tensor::max() const
+  {
+    std::vector<float> vals = read();
+    return *std::max_element(vals.begin(), vals.end());
+  }
+
   Tensor Tensor::transpose() const
   {
     assert(getSizes().size() == 2);
@@ -205,8 +218,9 @@ namespace NN
     for (int i(0) ; i < sizes.size() ; ++i)
       s += std::to_string(sizes[i]) + ((i < sizes.size() - 1) ? ", " : "");
     s += "] - Offset : " + std::to_string(getOffset());
+    s += " || Range [" + std::to_string(min()) + ",  " + std::to_string(max()) + "]";
 
-    if (data)
+      if (data)
       {
 	s += "\n{\n";
 	std::vector<float> d = read();

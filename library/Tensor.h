@@ -43,6 +43,8 @@ namespace NN
     Tensor &copy(Tensor const &o);
 
     Tensor means() const;
+    float min() const;
+    float max() const;
     Tensor transpose() const;
 
     std::string print(bool data = false) const;

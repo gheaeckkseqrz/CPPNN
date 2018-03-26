@@ -13,17 +13,28 @@ add_custom_command(
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/library/Kernels
   COMMENT "Generating code for OpenCLFuncs.")
 add_library( ArtoNNLib
+  library/ComputeGraph.cpp
   library/Convolution.cpp
   library/Kmeans.cpp
   library/MaxPooling.cpp
   library/Module.cpp
+  library/Node.cpp
+  library/NodeAdd.cpp
+  library/NodeMul.cpp
   library/OpenCL.cpp
   library/OpenCLFuncs.cpp
+  library/PixelShuffle.cpp
+  library/Placeholder.cpp
   library/ReflectionPadding.cpp
   library/Relu.cpp
   library/Segmenter.cpp
   library/Sequential.cpp
+  library/Tanh.cpp
   library/Tensor.cpp
+  library/TensorflowConvolution.cpp
+  library/TensorflowFactory.cpp
+  library/TensorflowParser.cpp
+  library/TensorflowTensor.cpp
   library/TorchConvolution.cpp
   library/TorchObject.cpp
   library/TorchLoader.cpp
@@ -45,4 +56,7 @@ target_link_libraries( TestNN ArtoNNLib )
 
 add_executable( Segmenter samples/Segmenter.cpp MatToTensor.cpp )
 target_link_libraries( Segmenter ArtoNNLib ${OpenCV_LIBS} )
+
+add_executable( Upres samples/Upres.cpp MatToTensor.cpp )
+target_link_libraries( Upres ArtoNNLib ${OpenCV_LIBS} )
 

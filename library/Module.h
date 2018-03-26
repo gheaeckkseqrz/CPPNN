@@ -10,6 +10,7 @@ namespace NN
   {
   public:
     Module();
+    virtual ~Module() {}
 
     virtual std::shared_ptr<Input> forward(std::shared_ptr<Input> const &input) = 0;
     virtual std::string print() const = 0;

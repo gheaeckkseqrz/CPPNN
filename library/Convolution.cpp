@@ -26,13 +26,7 @@ namespace NN
   void Convolution::setFilter(std::shared_ptr<Tensor> const &filter, std::shared_ptr<Tensor> const &bias)
   {
     _filter = filter;
-    if (bias == nullptr)
-      {
-	std::vector<float> defaultBias(_filter->getSizes()[0], 0);
-	_bias = std::make_shared<Tensor>(defaultBias);
-      }
-    else
-      _bias = bias;
+    _bias = bias;
   }
 
   void Convolution::setPadding(int padW, int padH)
@@ -44,7 +38,7 @@ namespace NN
   std::shared_ptr<Input> Convolution::forward(std::shared_ptr<Input> const &input)
   {
     std::shared_ptr<Tensor> inputTensor = std::dynamic_pointer_cast<Tensor>(input);
-    if (_filter == nullptr || _bias == nullptr)
+    if (_filter == nullptr)
       throw std::runtime_error("Convolution isn't setup");
     if (inputTensor == nullptr || inputTensor->getSizes().size() != 3)
       throw std::runtime_error("Convolution recieved invalid input");
@@ -56,7 +50,8 @@ namespace NN
     outputSizes[2] = (int)floor((float)((inputTensor->getSize(2) + 2 * _padW - _dilationW * (_filter->getSize(2) - 1) - 1) / _dW)) + 1;
 
     if (_output == nullptr || std::dynamic_pointer_cast<Tensor>(_output)->getSizes() != outputSizes)
-	_output.reset(new Tensor(outputSizes));
+      _output = std::make_shared<Tensor>(outputSizes);
+
     std::shared_ptr<Tensor> outputTensor = std::dynamic_pointer_cast<Tensor>(_output);
     outputTensor->fill(0);
 
@@ -91,7 +86,8 @@ namespace NN
     std::cout << "Running clblasSgemm " << double(end - begin) / CLOCKS_PER_SEC << " sec" << std::endl;
 
     outputTensor->setSizes(outputSizes);
-    outputTensor->add(*_bias);
+    if (_bias != nullptr)
+      outputTensor->add(*_bias);
     return _output;
   }
 
