@@ -44,6 +44,8 @@ namespace NN
 	std::fclose(fp);
 	return contents;
       }
+    else
+      throw std::runtime_error("Can't open file [" + path + "]");
     return "";
   }
 

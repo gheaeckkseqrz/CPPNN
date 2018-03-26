@@ -1,8 +1,10 @@
 #ifndef __COMPUTE_GRAPH__
 #define __COMPUTE_GRAPH__
 
-#include <string>
 #include <map>
+#include <memory>
+#include <string>
+
 
 namespace NN
 {

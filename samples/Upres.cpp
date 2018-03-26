@@ -4,7 +4,7 @@
 #include "Placeholder.h"
 #include "TensorflowParser.h"
 
-#define NETWORK_FILE "/Users/wilmot_p/Desktop/optimized_model.meta"
+#define NETWORK_FILE "/home/wilmot_p/optimized_model.meta"
 
 int main(int ac, char **av)
 {
@@ -18,7 +18,16 @@ int main(int ac, char **av)
 
   std::shared_ptr<NN::Tensor> inputImage = tensorFromImage(av[1]);
   std::cout << "Input : " << *inputImage << std::endl;
-  NN::ComputeGraph graph = NN::TensorflowParser::getInstance()->loadFromFile(NETWORK_FILE);
+  NN::ComputeGraph graph;
+  try
+    {
+      graph = NN::TensorflowParser::getInstance()->loadFromFile(NETWORK_FILE);
+    }
+  catch (const std::runtime_error& e)
+    {
+      std::cerr << "Exception while loading network : [" << e.what() << "]" << std::endl;
+      return -1;
+    }
 
   inputImage->div(255);
   inputImage->mul(2);
