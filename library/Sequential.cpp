@@ -10,9 +10,9 @@ namespace NN
   {
   }
 
-  std::shared_ptr<Input> Sequential::forward(std::shared_ptr<Input> const &input)
+  std::shared_ptr<Tensor> Sequential::forward(std::shared_ptr<Tensor> const &input)
   {
-    std::shared_ptr<Input> current = input;
+    std::shared_ptr<Tensor> current = input;
     for (int i(0) ; i < _modules.size() ; ++i)
       {
     	std::cout << "[Sequential " << i + 1 << " / " << _modules.size() << "] - " << *(_modules[i]) << std::endl;

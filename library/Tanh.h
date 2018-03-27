@@ -10,7 +10,7 @@ namespace NN
   public:
     Tanh();
 
-    virtual std::shared_ptr<Input> forward(std::shared_ptr<Input> const &input);
+    virtual std::shared_ptr<Tensor> forward(std::shared_ptr<Tensor> const &input);
     virtual std::string print() const;
   };
 }

@@ -5,12 +5,11 @@
 #include <vector>
 #include "cl.hpp"
 
-#include "Input.h"
 #include "Storage.h"
 
 namespace NN
 {
-  class Tensor : public Input
+  class Tensor
   {
   public:
     Tensor(cl_mem_flags flags =  CL_MEM_READ_WRITE);

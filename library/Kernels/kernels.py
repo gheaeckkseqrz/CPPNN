@@ -91,8 +91,9 @@ def generateFunction(filePath):
         function += "size_t nbThread, size_t groupSize)\n"
         function += "{\n"
         function += "std::string kernelSource = R\"RAW(" + kernel + ")RAW\"; \n"
-        function += "cl::Program program = OpenCL::getInstance()->buildProgramFromSource(kernelSource);\n"
-        function += "cl::Kernel kernel = cl::Kernel(program, \"" + functionName + "\");\n"
+        function += "if (_compiledKernels.count(\"" + functionName + "\") == 0)\n"
+        function += "_compiledKernels[\"" + functionName + "\"] = OpenCL::getInstance()->buildProgramFromSource(kernelSource);\n"
+        function += "cl::Kernel kernel = cl::Kernel(_compiledKernels[\"" + functionName + "\"], \"" + functionName + "\");\n"
         i = 0
         for p in parameters.split(','):
             CPPparameterType, CPPparameterName = getCPPParameterTypeAndName(p)

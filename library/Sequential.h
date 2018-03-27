@@ -12,7 +12,7 @@ namespace NN
   public:
     Sequential();
 
-    virtual std::shared_ptr<Input> forward(std::shared_ptr<Input> const &input);
+    virtual std::shared_ptr<Tensor> forward(std::shared_ptr<Tensor> const &input);
     std::shared_ptr<Module> get(unsigned int index) const;
     size_t size() const;
     void setRetainPolicy(std::vector<bool> const &policy);

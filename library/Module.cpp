@@ -6,7 +6,7 @@ namespace NN
   {
   }
 
-  std::shared_ptr<Input> Module::getOutput() const
+  std::shared_ptr<Tensor> Module::getOutput() const
   {
     return _output;
   }

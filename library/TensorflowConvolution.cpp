@@ -16,8 +16,7 @@ namespace NN
     std::shared_ptr<Tensor> filter = graph.getNode(_inputs.back())->evaluate(graph);
 
     std::dynamic_pointer_cast<Convolution>(_module)->setFilter(flipFilter(filter));
-    NN::Input *dummy = nullptr; // Make sure to fix next line when removing Input
-    return std::dynamic_pointer_cast<Tensor>(_module->forward(input));
+    return _module->forward(input);
   }
 
   std::shared_ptr<Tensor> TensorflowConvolution::flipFilter(std::shared_ptr<Tensor> const &filter)

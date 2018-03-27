@@ -65,14 +65,14 @@ namespace NN
     _network->forward(input);
     int totalChannels = 0;
     for (auto layer : _layers)
-      totalChannels += std::dynamic_pointer_cast<Tensor>(_network->get(layer)->getOutput())->getSize(0);
+      totalChannels += _network->get(layer)->getOutput()->getSize(0);
     std::vector<int> sizes({totalChannels, input->getSize(1), input->getSize(2)});
     std::shared_ptr<Tensor> maps = std::make_shared<Tensor>(sizes);
     std::cout << maps->means() << std::endl;
     int currentOffset = 0;
     for (int i(0) ; i < _layers.size() ; ++i)
       {
-        std::shared_ptr<Tensor> output = std::dynamic_pointer_cast<Tensor>(_network->get(_layers[i])->getOutput());
+        std::shared_ptr<Tensor> output = _network->get(_layers[i])->getOutput();
 	output->mul(_weights[i]);
         (*maps)[std::pair<int, int>(currentOffset, currentOffset + output->getSize(0))].copy(*output);
       }

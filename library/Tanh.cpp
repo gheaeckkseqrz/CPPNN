@@ -8,13 +8,11 @@ namespace NN
   {
   }
 
-  std::shared_ptr<Input> Tanh::forward(std::shared_ptr<Input> const &input)
+  std::shared_ptr<Tensor> Tanh::forward(std::shared_ptr<Tensor> const &input)
   {
-    std::shared_ptr<Tensor> inputTensor = std::dynamic_pointer_cast<Tensor>(input);
-    if (_output == nullptr || std::dynamic_pointer_cast<Tensor>(_output)->getSizes() != inputTensor->getSizes())
-      _output.reset(new Tensor(inputTensor->getSizes()));
-    std::shared_ptr<Tensor> outputTensor = std::dynamic_pointer_cast<Tensor>(_output);
-    OpenCLFuncs::getInstance()->hard_tan(*inputTensor, *outputTensor, outputTensor->getNbElements());
+    if (_output == nullptr || _output->getSizes() != input->getSizes())
+      _output = std::make_shared<Tensor>(input->getSizes());
+    OpenCLFuncs::getInstance()->hard_tan(*input, *_output, _output->getNbElements());
     return _output;
   }
 

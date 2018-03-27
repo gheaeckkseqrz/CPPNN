@@ -4,7 +4,7 @@
 #include "Placeholder.h"
 #include "TensorflowParser.h"
 
-#define NETWORK_FILE "/home/wilmot_p/optimized_model.meta"
+#define NETWORK_FILE "/Users/wilmot_p/Desktop/optimized_model.meta"
 
 int main(int ac, char **av)
 {

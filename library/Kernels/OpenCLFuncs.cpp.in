@@ -1,7 +1,6 @@
 #include <ctime>
 
 #include "OpenCLFuncs.h"
-#include "OpenCL.h"
 #include "Tensor.h"
 
 namespace NN

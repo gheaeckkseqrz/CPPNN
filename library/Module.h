@@ -2,7 +2,7 @@
 #define __MODULE_H__
 
 #include <memory>
-#include "Input.h"
+#include "Tensor.h"
 
 namespace NN
 {
@@ -12,13 +12,13 @@ namespace NN
     Module();
     virtual ~Module() {}
 
-    virtual std::shared_ptr<Input> forward(std::shared_ptr<Input> const &input) = 0;
+    virtual std::shared_ptr<Tensor> forward(std::shared_ptr<Tensor> const &input) = 0;
     virtual std::string print() const = 0;
-    std::shared_ptr<Input> getOutput() const;
+    std::shared_ptr<Tensor> getOutput() const;
     void clearOutput();
 
   protected:
-    std::shared_ptr<Input> _output;
+    std::shared_ptr<Tensor> _output;
   };
 
   std::ostream &operator<<(std::ostream &s, Module const &m);

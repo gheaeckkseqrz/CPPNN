@@ -2,11 +2,13 @@
 #define __OPENCLFUNCS__
 
 #include <iostream>
+#include <map>
+#include "OpenCL.h"
 
 namespace NN
 {
   class Tensor;
-  
+
   class OpenCLFuncs
   {
   public:
@@ -18,6 +20,7 @@ namespace NN
   private:
     OpenCLFuncs();
     static OpenCLFuncs *_instance;
+    std::map<std::string, cl::Program> _compiledKernels;
   };
 }
 
