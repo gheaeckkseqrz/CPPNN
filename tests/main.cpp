@@ -2,6 +2,7 @@
 #include "catch.h"
 
 #include "TestConvolution.cpp"
+#include "TestKMeans.cpp"
 #include "TestTensor.cpp"
 #include "TestTensorflowTensor.cpp"
 #include "TestTorchConvolution.cpp"

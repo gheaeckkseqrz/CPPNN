@@ -9,14 +9,13 @@ namespace NN
   {
   }
 
-  std::shared_ptr<Tensor> Kmeans::clusterData(std::shared_ptr<Tensor> data)
+  std::shared_ptr<Tensor> Kmeans::clusterData(std::shared_ptr<Tensor> data, int maxIteration)
   {
     std::vector<int> backupSizes = data->getSizes();
     data->flatten();
     initCentroids(data);
 
-    std::cout << "_indexes : " << *_indexes << std::endl;
-    for (int i(0) ; i < 50 ; ++i)
+    for (int i(0) ; i < maxIteration ; ++i)
       {
         OpenCLFuncs::getInstance()->kmeans(*data, *_centroids, *_indexes, 0, _indexes->getNbElements());
 	updateCentroids(data);
@@ -24,6 +23,11 @@ namespace NN
     data->setSizes(backupSizes);
     _indexes->setSizes(std::vector<int>({data->getSize(1), data->getSize(2)}));
     return _indexes;
+  }
+
+  std::shared_ptr<Tensor> Kmeans::getCentroids() const
+  {
+    return _centroids;
   }
 
   void Kmeans::initCentroids(std::shared_ptr<Tensor> data)

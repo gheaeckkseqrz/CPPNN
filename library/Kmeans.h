@@ -10,7 +10,8 @@ namespace NN
   public:
     Kmeans(int nbCluster);
 
-    std::shared_ptr<Tensor> clusterData(std::shared_ptr<Tensor> data);
+    std::shared_ptr<Tensor> clusterData(std::shared_ptr<Tensor> data, int maxIteration = 50);
+    std::shared_ptr<Tensor> getCentroids() const;
 
   protected:
     void initCentroids(std::shared_ptr<Tensor> data);
