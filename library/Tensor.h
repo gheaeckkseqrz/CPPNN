@@ -22,6 +22,7 @@ namespace NN
     int getSize(int index) const;
     std::vector<int> const &getSizes() const;
     void setSizes(std::vector<int> const &sizes);
+    void setOffset(size_t offset);
     void flatten();
     std::vector<float> read() const;
     cl::Buffer getBuffer() const;

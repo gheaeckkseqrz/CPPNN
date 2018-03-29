@@ -15,7 +15,7 @@ namespace NN
     virtual ~Storage() { }
 
     cl::Buffer getBuffer() const;
-    std::vector<T> read() const;
+    std::vector<T> read(size_t offset = 0, size_t size = -1) const;
 
   protected:
     cl::Buffer _buffer;

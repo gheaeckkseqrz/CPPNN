@@ -27,10 +27,13 @@ class OpenCL
       return b;
     }
 
-  template<typename T> void fromGPU(std::vector<T> &data, cl::Buffer const &b)
+  template<typename T> void fromGPU(std::vector<T> &data, cl::Buffer const &b, size_t offset = 0, size_t size = -1)
     {
-      size_t size = data.size() * sizeof(T);
-      assert(_queue.enqueueReadBuffer(b, CL_TRUE, 0, size, data.data()) == CL_SUCCESS);
+      if (size == -1)
+	size = data.size();
+      size *= sizeof(T);
+      offset *= sizeof(T);
+      assert(_queue.enqueueReadBuffer(b, CL_TRUE, offset, size, data.data()) == CL_SUCCESS);
     }
 
 

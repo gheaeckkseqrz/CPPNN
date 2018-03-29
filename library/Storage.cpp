@@ -32,10 +32,10 @@ namespace NN
   }
 
   template<class T>
-  std::vector<T> Storage<T>::read() const
+  std::vector<T> Storage<T>::read(size_t offset, size_t size) const
   {
-    std::vector<T> b(_size);
-    OpenCL::getInstance()->fromGPU<T>(b, _buffer);
+    std::vector<T> b(size);
+    OpenCL::getInstance()->fromGPU<T>(b, _buffer, offset, size);
     return b;
   }
 }

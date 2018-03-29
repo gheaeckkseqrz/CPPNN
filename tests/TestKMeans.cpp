@@ -15,9 +15,9 @@ TEST_CASE( "1D - Kmeans" "[KMeans]" )
   std::vector<float> points({0, 4, 5});
   std::shared_ptr<Tensor> t = std::make_shared<Tensor>(std::vector<int>({1, 3}), points);
   Kmeans o(2);
-  o.clusterData(t, 1);
+  std::shared_ptr<Tensor> results = o.clusterData(t, 1);
   std::vector<float> expectedResult({1, 0, 0});
-  REQUIRE(o.clusterData(t)->read() == expectedResult);
+  REQUIRE(results->read() == expectedResult);
 }
 
 TEST_CASE( "1D - Update Centroids" "[KMeans]" )

@@ -63,6 +63,11 @@ namespace NN
     _sizesStorage = std::unique_ptr<Storage<int>>(new Storage<int>(sizes));
   }
 
+  void Tensor::setOffset(size_t offset)
+  {
+    _offset = offset;
+  }
+
   void Tensor::flatten()
   {
     std::vector<int> newSizes;
@@ -73,7 +78,7 @@ namespace NN
 
   std::vector<float> Tensor::read() const
   {
-    return _storage->read();
+    return _storage->read(_offset, getNbElements() - _offset);
   }
 
   cl::Buffer Tensor::getBuffer() const

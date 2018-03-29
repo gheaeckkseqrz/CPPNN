@@ -21,7 +21,7 @@ namespace NN
 	updateCentroids(data);
       }
     data->setSizes(backupSizes);
-    _indexes->setSizes(std::vector<int>({data->getSize(1), data->getSize(2)}));
+    _indexes->setSizes(std::vector<int>(data->getSizes().begin() + 1, data->getSizes().end()));
     return _indexes;
   }
 
