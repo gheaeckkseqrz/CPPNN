@@ -12,12 +12,31 @@ namespace NN
   std::shared_ptr<Tensor> Kmeans::clusterData(std::shared_ptr<Tensor> data, int maxIteration)
   {
     std::vector<int> backupSizes = data->getSizes();
+    _data = data->read();
     data->flatten();
     initCentroids(data);
 
+    Tensor previousIndexes(_indexes->getSizes());
     for (int i(0) ; i < maxIteration ; ++i)
       {
+ 	// std::cout << "====================================================================================" << std::endl;
+	// std::cout << "Iteration Centroids " << i << std::endl;
+	// std::cout << _centroids->print(true);
+	// std::cout << "====================================================================================" << std::endl;
+
         OpenCLFuncs::getInstance()->kmeans(*data, *_centroids, *_indexes, 0, _indexes->getNbElements());
+
+	// std::cout << "====================================================================================" << std::endl;
+	// std::cout << "Iteration Indexes " << i << std::endl;
+	// std::cout << _indexes->print(true);
+	// std::cout << "====================================================================================" << std::endl;
+
+	if (_indexes->dataEquals(previousIndexes))
+	  {
+	    std::cout << "Converged after " << i << " iterations" << std::endl;
+	    break;
+	  }
+	previousIndexes.copy(*_indexes);
 	updateCentroids(data);
       }
     data->setSizes(backupSizes);
@@ -47,24 +66,45 @@ namespace NN
 
   void Kmeans::updateCentroids(std::shared_ptr<Tensor> data)
   {
-    std::vector<float> dataArray = data->read();
-    std::vector<float> indexes = _indexes->read();
-    std::vector<float> newCentroidsArray(_centroids->getNbElements());
-    std::vector<float> counter(_centroids->getSize(0));
-
-    int channelSize = data->getNbElements() / data->getSize(0);
-    for (int i = 0 ; i < dataArray.size() ; ++i)
+    std::vector<int> scratchSizes = data->getSizes();
+    scratchSizes[0] += 1;
+    Tensor scratch(scratchSizes);
+    for (int clusterIndex(0) ; clusterIndex < _nbCluster ; ++clusterIndex)
       {
-        int channel = i / channelSize;
-        int sample = i % channelSize;
-        int index = (int)indexes[sample];
-        newCentroidsArray[index * _centroids->getSize(1) + channel] += dataArray[i];
-        if (channel == 0)
-          counter[index]++;
+	OpenCLFuncs::getInstance()->kmeansReductionInit(*data, scratch, *_indexes, clusterIndex, scratch.getNbElements());
+	int offset = data->getSize(1);
+	int length = data->getSize(1);
+	while (offset > 1)
+	  {
+	    offset = (length / 2) + (length % 2);
+	    // std::cout << "=============================================================================================================" << std::endl;
+	    // std::cout << "Offset : " << offset << std::endl;
+	    // std::cout << scratch.print(true) << std::endl;
+	    // std::cout << "=============================================================================================================" << std::endl;
+	    OpenCLFuncs::getInstance()->kmeansReductionStep(scratch, offset, length, scratch.getNbElements());
+	    length = offset;
+	  }
+	OpenCLFuncs::getInstance()->kmeansRetreiveResults(scratch, (*_centroids)[clusterIndex], _centroids->getSize(1));
       }
-    _centroids->copy(newCentroidsArray);
-    Tensor divTensor(counter);
-    _centroids->div(divTensor);
-  }
 
+//	OpenCLFuncs::getInstance()->kmeansUpdate(*data, *_centroids, *_indexes, scratch, i, data->getNbElements());
+    
+    // std::vector<float> indexes = _indexes->read();
+    // std::vector<float> newCentroidsArray(_centroids->getNbElements());
+    // std::vector<float> counter(_centroids->getSize(0));
+
+    // int channelSize = data->getNbElements() / data->getSize(0);
+    // for (int i = 0 ; i < _data.size() ; ++i)
+    //   {
+    //     int channel = i / channelSize;
+    //     int sample = i % channelSize;
+    //     int index = (int)indexes[sample];
+    //     newCentroidsArray[index * _centroids->getSize(1) + channel] += _data[i];
+    //     if (channel == 0)
+    //       counter[index]++;
+    //   }
+    // _centroids->copy(newCentroidsArray);
+    // Tensor divTensor(counter);
+    // _centroids->div(divTensor);
+  }
 }
