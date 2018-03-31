@@ -3,9 +3,11 @@
 #include "Segmenter.h"
 #include "TorchLoader.h"
 
+#include "OpenCLFuncs.h"
+
 using namespace NN;
 
-#define SEGMENTER_NETWORK_PATH "/Users/wilmot_p/PROG/CPPNN2/Tests/TestData/dilatedVGGReflectionPadding.t7"
+#define SEGMENTER_NETWORK_PATH "../tests/TestData/dilatedVGGReflectionPadding.t7"
 
 int main(int ac, char **av)
 {
@@ -16,10 +18,14 @@ int main(int ac, char **av)
       return 1;
     }
 
-  std::shared_ptr<Tensor> t = tensorFromImage(av[1]);
-  t->sub(127); // -- Preprocessing image for VGG
-  Segmenter s(SEGMENTER_NETWORK_PATH);
-  std::shared_ptr<Tensor> mask = s.createRGBMask(t);
-  saveTensorAsImage(mask, "./mask.png");
+  for (int i(1) ; i < ac ; ++i)
+    {
+      std::shared_ptr<Tensor> t = tensorFromImage(av[i], 512);
+      std::cout << "Input : " << *t << std::endl;
+      t->sub(127); // -- Preprocessing image for VGG
+      Segmenter s(SEGMENTER_NETWORK_PATH);
+      std::shared_ptr<Tensor> mask = s.createRGBMask(t);
+      saveTensorAsImage(mask, "./mask" + std::to_string(i) + ".png");
+    }
   return 0;
 }

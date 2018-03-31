@@ -13,13 +13,18 @@ std::shared_ptr<NN::Tensor> matToTensor(cv::Mat const &m)
   return goodLayout;
 }
 
-std::shared_ptr<NN::Tensor> tensorFromImage(std::string const &path)
+std::shared_ptr<NN::Tensor> tensorFromImage(std::string const &path, int maxSize)
 {
   cv::Mat image = cv::imread(path, cv::IMREAD_COLOR);
   if(!image.data)
     {
       std::cerr << "Could not open or find the image [" << path << "]" << std::endl;
       return nullptr;
+    }
+  if (maxSize > 0)
+    {
+      float ratio = (float)maxSize / (float)std::max(image.cols, image.rows);
+      cv::resize(image, image, cv::Size(), ratio, ratio);
     }
   return matToTensor(image);
 }

@@ -14,6 +14,7 @@ namespace NN
 
     virtual std::shared_ptr<Tensor> forward(std::shared_ptr<Tensor> const &input);
     std::shared_ptr<Module> get(unsigned int index) const;
+    void remove(unsigned int index);
     size_t size() const;
     void setRetainPolicy(std::vector<bool> const &policy);
     virtual std::string print() const;
