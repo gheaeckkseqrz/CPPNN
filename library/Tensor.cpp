@@ -227,13 +227,13 @@ namespace NN
 
       if (data)
       {
-	s += "\n{\n";
+	s += "\n{";
 	std::vector<float> d = read();
 	for (int i(0) ; i < d.size() ; ++i)
 	  {
-	    s += std::to_string(d[i]) + ", ";
-	    if (i != 0 && ((i+1) % (getNbElements() / getSize(0))) == 0)
+	    if ((i % (getNbElements() / getSize(0))) == 0 && _sizes.size() > 1)
 	      s += '\n';
+	    s += std::to_string(d[i]).substr(0, 5) + ", ";
 	  }
 	s += "\n}\n";
       }

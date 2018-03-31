@@ -21,7 +21,8 @@ namespace NN
     int _nbCluster;
     std::shared_ptr<Tensor> _centroids;
     std::shared_ptr<Tensor> _indexes;
-};
+    std::vector<float> _data;
+  };
 }
 
 #endif

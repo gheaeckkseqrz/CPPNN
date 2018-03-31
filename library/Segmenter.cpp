@@ -9,7 +9,9 @@ namespace NN
   {
     _network = std::dynamic_pointer_cast<Sequential>(TorchLoader::getInstance()->loadFile(networkFile));
     _layers = std::vector<int>({2, 8, 14, 26, 38});
-    _weights = std::vector<int>({1, 1, 1, 4, 1});
+    _weights = std::vector<int>({1, 1, 1, 1, 1});
+    while (_network->size() > _layers.back() + 1)
+      _network->remove(_network->size() - 1);
     std::vector<bool> retainPolicy(_network->size(), false);
     for (int l : _layers)
       retainPolicy[l] = true;
@@ -68,13 +70,14 @@ namespace NN
       totalChannels += _network->get(layer)->getOutput()->getSize(0);
     std::vector<int> sizes({totalChannels, input->getSize(1), input->getSize(2)});
     std::shared_ptr<Tensor> maps = std::make_shared<Tensor>(sizes);
-    std::cout << maps->means() << std::endl;
     int currentOffset = 0;
     for (int i(0) ; i < _layers.size() ; ++i)
       {
         std::shared_ptr<Tensor> output = _network->get(_layers[i])->getOutput();
 	output->mul(_weights[i]);
         (*maps)[std::pair<int, int>(currentOffset, currentOffset + output->getSize(0))].copy(*output);
+	// std::cout << "maps[" << currentOffset << ", " << currentOffset + output->getSize(0) << "] : " << (*maps)[std::pair<int, int>(currentOffset, currentOffset + output->getSize(0))] << std::endl;
+	currentOffset += output->getSize(0);
       }
     return maps;
   }

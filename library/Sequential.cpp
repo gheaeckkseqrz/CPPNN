@@ -30,6 +30,12 @@ namespace NN
     return _modules[index];
   }
 
+  void Sequential::remove(unsigned int index)
+  {
+    std::cout << "Removing " << *_modules[index] << std::endl;
+    _modules.erase(_modules.begin() + index);
+  }
+
   size_t Sequential::size() const
   {
     return _modules.size();
