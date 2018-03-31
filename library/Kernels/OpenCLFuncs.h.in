@@ -5,6 +5,8 @@
 #include <map>
 #include "OpenCL.h"
 
+#define LOG_KERNEL_EXECUTION false
+
 namespace NN
 {
   class Tensor;

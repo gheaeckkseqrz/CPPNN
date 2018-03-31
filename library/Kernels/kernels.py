@@ -109,9 +109,11 @@ def generateFunction(filePath):
                 function += "kernel.setArg(" + str(i) + ", " + toCLType(CPPparameterType) + CPPparameterName + ");\n"
                 i += 1
         function += "clock_t begin = clock();\n"
+        function += "if (LOG_KERNEL_EXECUTION)"
         function += "std::cout << \"Running kernel [" + functionName + "] with \" << nbThread << \" threads - (groupSize : \" << (int)groupSize << \") \";\n"
         function += "OpenCL::getInstance()->runKernel(kernel, nbThread, groupSize);\n"
         function += "clock_t end = clock();\n"
+        function += "if (LOG_KERNEL_EXECUTION)"
         function += "std::cout << double(end - begin) / CLOCKS_PER_SEC << \" sec\" << std::endl;\n"
         function += "}\n"
 

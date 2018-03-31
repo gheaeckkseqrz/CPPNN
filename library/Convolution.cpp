@@ -81,7 +81,8 @@ namespace NN
     clock_t end = clock();
     if (err != CL_SUCCESS)
       throw std::runtime_error("clblasSgemmEx() failed with " + std::to_string(err));
-    std::cout << "Running clblasSgemm " << double(end - begin) / CLOCKS_PER_SEC << " sec" << std::endl;
+    if (LOG_KERNEL_EXECUTION)
+      std::cout << "Running clblasSgemm " << double(end - begin) / CLOCKS_PER_SEC << " sec" << std::endl;
 
     _output->setSizes(outputSizes);
     if (_bias != nullptr)
