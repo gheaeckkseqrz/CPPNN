@@ -11,6 +11,6 @@ kernel void tensorToMat(Tensor input, Tensor output)
   BRG2RGB[1] = 1;
   BRG2RGB[2] = 0;
 
-  int src = (BRG2RGB[c] * channelSize) + (y * input_dims[2]) + x;
+  int src = (BRG2RGB[c] * channelSize) + (y * input_dims[1]) + x;
   output_data[pos + output_offset] = input_data[src + input_offset];
 }

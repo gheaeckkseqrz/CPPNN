@@ -8,7 +8,7 @@ std::shared_ptr<NN::Tensor> matToTensor(cv::Mat const &m)
   std::vector<float> v;
   v.assign((float*)m2.datastart, (float*)m2.dataend);
   NN::Tensor badLayout(std::vector<int>({3, m2.cols, m2.rows}), v);
-  std::shared_ptr<NN::Tensor> goodLayout = std::make_shared<NN::Tensor>(std::vector<int>({3, m.cols, m.rows}));
+  std::shared_ptr<NN::Tensor> goodLayout = std::make_shared<NN::Tensor>(std::vector<int>({3, m.rows, m.cols}));
   NN::OpenCLFuncs::getInstance()->tensorFromMat(badLayout, *goodLayout, goodLayout->getNbElements());
   return goodLayout;
 }
@@ -34,7 +34,7 @@ void saveTensorAsImage(std::shared_ptr<NN::Tensor> t, std::string const &path)
   std::shared_ptr<NN::Tensor> goodLayout = std::make_shared<NN::Tensor>(t->getSizes());
   NN::OpenCLFuncs::getInstance()->tensorToMat(*t, *goodLayout, goodLayout->getNbElements());
   std::vector<float> data = goodLayout->read();
-  cv::Mat m(goodLayout->getSize(2), goodLayout->getSize(1), CV_32FC3, data.data());
+  cv::Mat m(goodLayout->getSize(1), goodLayout->getSize(2), CV_32FC3, data.data());
   try
     {
       cv::imwrite(path, m);
