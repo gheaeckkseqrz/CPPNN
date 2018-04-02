@@ -57,6 +57,7 @@ namespace NN
     std::shared_ptr<Tensor> im2col = std::make_shared<Tensor>(im2colSizes);
 
     OpenCLFuncs::getInstance()->convolutionImg2Cols(*input, *im2col, _filter->getSize(2), _filter->getSize(3), _padW, _padH, _dilationW, _dilationH, im2col->getNbElements());
+    std::vector<int> filterSizes = _filter->getSizes();
     _filter->flatten();
     _output->flatten();
 
@@ -85,6 +86,7 @@ namespace NN
       std::cout << "Running clblasSgemm " << double(end - begin) / CLOCKS_PER_SEC << " sec" << std::endl;
 
     _output->setSizes(outputSizes);
+    _filter->setSizes(filterSizes);
     if (_bias != nullptr)
       _output->add(*_bias);
     return _output;
