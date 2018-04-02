@@ -45,6 +45,7 @@ namespace NN
     float min() const;
     float max() const;
     Tensor transpose() const;
+    Tensor covariance() const;
 
     std::string print(bool data = false) const;
 

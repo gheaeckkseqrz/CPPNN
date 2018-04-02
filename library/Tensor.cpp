@@ -1,4 +1,6 @@
 #include <algorithm>
+#include <clBLAS.h>
+
 #include "Tensor.h"
 #include "OpenCL.h"
 #include "OpenCLFuncs.h"
@@ -209,6 +211,21 @@ namespace NN
     Tensor res(std::vector<int>({getSize(1), getSize(0)}));
     OpenCLFuncs::getInstance()->tensorTranspose(*this, res, res.getNbElements());
     return res;
+  }
+
+  Tensor Tensor::covariance() const
+  {
+    assert(getSizes().size() == 2);
+    Tensor result(std::vector<int>({getSize(0), getSize(0)}));
+    cl_command_queue queue = OpenCL::getInstance()->getQueue()();
+    int err = clblasSsyrk(clblasRowMajor, clblasUpper, clblasNoTrans,
+		getSize(0), getSize(1), 1.0f, getBuffer()(), getOffset(), getSize(1),
+		1.0f, result.getBuffer()(), result.getOffset(), result.getSize(1),
+		1, &queue, 0, NULL, NULL);
+    if (err != CL_SUCCESS)
+      throw std::runtime_error("clblasSsyrk failled with error code " + std::to_string(err));
+    OpenCLFuncs::getInstance()->tensorDiagCopy(result, result.getNbElements());
+    return result;
   }
 
   std::string Tensor::print(bool data) const
