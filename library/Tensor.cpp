@@ -191,6 +191,13 @@ namespace NN
     return *this;
   }
 
+  Tensor &Tensor::copy(std::vector<float> const &o)
+  {
+    assert(getNbElements() == o.size());
+    _storage->write(o, _offset);
+    return *this;
+  }
+
   Tensor Tensor::means() const
   {
     Tensor res(std::vector<int>({getSize(0)}));
@@ -218,18 +225,22 @@ namespace NN
     return res;
   }
 
-  Tensor Tensor::covariance() const
+  std::shared_ptr<Tensor> Tensor::covariance()
   {
     assert(getSizes().size() == 2);
-    Tensor result(std::vector<int>({getSize(0), getSize(0)}));
+    Tensor mean = means();
+    sub(mean);
+    std::shared_ptr<Tensor> result = std::make_shared<Tensor>(std::vector<int>({getSize(0), getSize(0)}));
     cl_command_queue queue = OpenCL::getInstance()->getQueue()();
     int err = clblasSsyrk(clblasRowMajor, clblasUpper, clblasNoTrans,
 		getSize(0), getSize(1), 1.0f, getBuffer()(), getOffset(), getSize(1),
-		1.0f, result.getBuffer()(), result.getOffset(), result.getSize(1),
+		1.0f, result->getBuffer()(), result->getOffset(), result->getSize(1),
 		1, &queue, 0, NULL, NULL);
     if (err != CL_SUCCESS)
       throw std::runtime_error("clblasSsyrk failled with error code " + std::to_string(err));
-    OpenCLFuncs::getInstance()->tensorDiagCopy(result, result.getNbElements());
+    OpenCLFuncs::getInstance()->tensorDiagCopy(*result, result->getNbElements());
+    add(mean);
+    result->div(getSize(1) - 1);
     return result;
   }
 

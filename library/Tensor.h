@@ -41,12 +41,13 @@ namespace NN
     Tensor &div(Tensor const &o);
     Tensor &fill(float value);
     Tensor &copy(Tensor const &o);
+    Tensor &copy(std::vector<float> const &o);
 
     Tensor means() const;
     float min() const;
     float max() const;
     Tensor transpose() const;
-    Tensor covariance() const;
+    std::shared_ptr<Tensor> covariance(); // const;
 
     std::string print(bool data = false) const;
 
