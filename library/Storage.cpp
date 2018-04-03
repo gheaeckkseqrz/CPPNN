@@ -38,4 +38,10 @@ namespace NN
     OpenCL::getInstance()->fromGPU<T>(b, _buffer, offset, size);
     return b;
   }
+
+  template<class T>
+  void Storage<T>::write(std::vector<T> const &data, size_t offset)
+  {
+    OpenCL::getInstance()->writeToBuffer<T>(_buffer, data, offset);
+  }
 }

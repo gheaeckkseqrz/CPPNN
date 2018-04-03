@@ -16,6 +16,7 @@ namespace NN
 
     cl::Buffer getBuffer() const;
     std::vector<T> read(size_t offset = 0, size_t size = -1) const;
+    void write(std::vector<T> const &data, size_t offset);
 
   protected:
     cl::Buffer _buffer;
