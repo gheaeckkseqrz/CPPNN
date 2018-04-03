@@ -110,7 +110,6 @@ TEST_CASE( "Tensor Element wise addition", "[Tensor]" )
     REQUIRE( Approx(computed[i]) == result[i] );
 }
 
-
 TEST_CASE( "Tensor Element wise addition with offset", "[Tensor]" )
 {
   std::vector<float>                  v1({1, 2, 3, 4,   5,    6,  7,    8});
@@ -161,4 +160,37 @@ TEST_CASE( "Tensor Element wise substraction with offset", "[Tensor]" )
   std::vector<float> computed = t1.read();
   for (int i(0) ; i < computed.size() ; ++i)
     REQUIRE( Approx(computed[i]) == result[i] );
+}
+
+TEST_CASE( "Tensor Covariance - Square Tensor", "[Tensor]" )
+{
+  std::vector<float> data;
+  for (int i(1) ; i <= 25 ; ++i)
+    data.push_back(i);
+  Tensor t(std::vector<int>({5, 5}), data);
+  Tensor cov = t.covariance();
+  std::vector<float> expectedCovariance({
+        55,   130,   205,   280,   355,
+	130,   330,   530,   730,   930,
+	205,   530,   855,  1180,  1505,
+	280,   730,  1180,  1630,  2080,
+	355,   930,  1505,  2080,  2655});
+  REQUIRE(cov.read() == expectedCovariance);
+}
+
+
+TEST_CASE( "Tensor Covariance - Non Square Tensor", "[Tensor]" )
+{
+  std::vector<float> data;
+  for (int i(1) ; i <= 125 ; ++i)
+    data.push_back(i);
+  Tensor t(std::vector<int>({5, 25}), data);
+  Tensor cov = t.covariance();
+  std::vector<float> expectedCovariance({
+        5525,   13650,   21775,   29900,   38025,
+	13650,   37400,   61150,   84900,  108650,
+	21775,   61150,  100525,  139900,  179275,
+	29900,   84900,  139900,  194900, 249900,
+	38025,  108650,  179275,  249900,  320525});
+  REQUIRE(cov.read() == expectedCovariance);
 }

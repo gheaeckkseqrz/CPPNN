@@ -11,6 +11,6 @@ kernel void tensorFromMat(Tensor input, Tensor output)
   BRG2RGB[1] = 1;
   BRG2RGB[2] = 0;
 
-  int src = (y * input_dims[2] + x) * input_dims[0] + BRG2RGB[c];
+  int src = (y * input_dims[1] + x) * input_dims[0] + BRG2RGB[c];
   output_data[pos + output_offset] = input_data[src + input_offset];
 }
