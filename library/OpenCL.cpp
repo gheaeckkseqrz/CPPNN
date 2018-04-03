@@ -105,7 +105,11 @@ void OpenCL::runKernel(cl::Kernel &kernel, unsigned int workItems, unsigned int 
   int ret = _queue.enqueueNDRangeKernel(kernel, cl::NullRange, global, local);
   _queue.finish();
   if (ret != CL_SUCCESS)
-    std::cerr << "runKernel returned error " << ret << std::endl;
+    {
+      std::string functionName;
+      kernel.getInfo(CL_KERNEL_FUNCTION_NAME, &functionName);
+      std::cerr << "runKernel [" << functionName << "] returned error " << ret << std::endl;
+    }
 }
 
 cl::CommandQueue OpenCL::getQueue() const
