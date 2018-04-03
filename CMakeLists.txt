@@ -5,7 +5,7 @@ set(CMAKE_BUILD_TYPE Debug)
 find_package( OpenCL REQUIRED )
 find_package( clBLAS REQUIRED )
 find_package( OpenCV REQUIRED )
-include_directories( ${OpenCL_INCLUDE_DIRS} ${clBLAS_INCLUDE_DIR} ${OpenCV_INCLUDE_DIRS} ${CMAKE_CURRENT_SOURCE_DIR}/library)
+include_directories( ${OpenCL_INCLUDE_DIRS} ${clBLAS_INCLUDE_DIR} ${OpenCV_INCLUDE_DIRS} ${CMAKE_CURRENT_SOURCE_DIR}/library ${CMAKE_CURRENT_SOURCE_DIR}/external)
 add_custom_command(
   OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/library/OpenCLFuncs.cpp ${CMAKE_CURRENT_SOURCE_DIR}/library/OpenCLFuncs.h
   COMMAND source .env/bin/activate && python kernels.py
@@ -23,6 +23,7 @@ add_library( ArtoNNLib
   library/NodeMul.cpp
   library/OpenCL.cpp
   library/OpenCLFuncs.cpp
+  library/PCA.cpp
   library/PixelShuffle.cpp
   library/Placeholder.cpp
   library/ReflectionPadding.cpp
