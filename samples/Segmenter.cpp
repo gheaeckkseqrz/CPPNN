@@ -30,10 +30,10 @@ int main(int ac, char **av)
       clock_t begin = clock();
       std::shared_ptr<Tensor> mask = s.createRGBMask(t);
       clock_t end = clock();
-      saveTensorAsImage(mask, "./mask_" + std::to_string(i) + ".png");
+      saveTensorAsImage(mask, "./PCA_mask_" + std::to_string(i) + ".png");
       std::cout << "Processed " << av[i] << " Runtime : " << double(end - begin) / CLOCKS_PER_SEC << " sec" << std::endl;
       runtime += double(end - begin);
     }
-  std::cout << "Average runtime : " << runtime / CLOCKS_PER_SEC / ac - 1 << " sec" << std::endl;
+  std::cout << "Average runtime : " << runtime / CLOCKS_PER_SEC / (ac - 1) << " sec" << std::endl;
   return 0;
 }
