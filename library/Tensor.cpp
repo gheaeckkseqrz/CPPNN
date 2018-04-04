@@ -244,6 +244,40 @@ namespace NN
     return result;
   }
 
+  std::shared_ptr<Tensor> Tensor::matrixMultiply(Tensor &o, std::shared_ptr<Tensor> output)
+  {
+    if (getSizes().size() != 2 || o.getSizes().size() != 2 || getSize(1) != o.getSize(0))
+      throw std::runtime_error("Bad tensor A dimentions for matrix multiply : " + print() + " & " + o.print());
+
+    Tensor *tA = this;
+    Tensor *tB = &o;
+    std::shared_ptr<Tensor> tC = output;
+    if (tC == nullptr)
+      tC = std::make_shared<Tensor>(std::vector<int>({getSize(0), o.getSize(1)}));
+
+    cl_command_queue queue = OpenCL::getInstance()->getQueue()();
+    int M = tA->getSize(0);
+    int N = tB->getSize(1);
+    int K = tA->getSize(1);
+    clock_t begin = clock();
+    cl_event event = NULL;
+    int err = clblasSgemm(clblasRowMajor, clblasNoTrans, clblasNoTrans, M, N, K,
+    			  1,
+    			  tA->getBuffer()(), tA->getOffset(), tA->getSize(1),
+    			  tB->getBuffer()(), tB->getOffset(), tB->getSize(1), 1,
+    			  tC->getBuffer()(), tC->getOffset(), tC->getSize(1),
+    			  1, &queue, 0, NULL, &event);
+    clWaitForEvents(1, &event);
+    clReleaseEvent(event);
+    clock_t end = clock();
+    if (err != CL_SUCCESS)
+      throw std::runtime_error("clblasSgemmEx() failed with " + std::to_string(err));
+    if (LOG_KERNEL_EXECUTION)
+      std::cout << "Running clblasSgemm " << double(end - begin) / CLOCKS_PER_SEC << " sec" << std::endl;
+
+    return tC;
+  }
+
   std::string Tensor::print(bool data) const
   {
     std::string s = "Tensor [";

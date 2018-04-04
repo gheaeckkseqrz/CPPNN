@@ -48,6 +48,7 @@ namespace NN
     float max() const;
     Tensor transpose() const;
     std::shared_ptr<Tensor> covariance(); // const;
+    std::shared_ptr<Tensor> matrixMultiply(Tensor &o, std::shared_ptr<Tensor> output = nullptr);
 
     std::string print(bool data = false) const;
 

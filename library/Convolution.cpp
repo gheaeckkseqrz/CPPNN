@@ -61,29 +61,31 @@ namespace NN
     _filter->flatten();
     _output->flatten();
 
-    std::shared_ptr<Tensor> tA = _filter;
-    std::shared_ptr<Tensor> tB = im2col;
-    std::shared_ptr<Tensor> tC = _output;
+    // std::shared_ptr<Tensor> tA = _filter;
+    // std::shared_ptr<Tensor> tB = im2col;
+    // std::shared_ptr<Tensor> tC = _output;
 
-    cl_command_queue queue = OpenCL::getInstance()->getQueue()();
-    int M = tA->getSize(0);
-    int N = tB->getSize(1);
-    int K = tA->getSize(1);
-    clock_t begin = clock();
-    cl_event event = NULL;
-    int err = clblasSgemm(clblasRowMajor, clblasNoTrans, clblasNoTrans, M, N, K,
-			  1,
-			  tA->getBuffer()(), tA->getOffset(), tA->getSize(1),
-			  tB->getBuffer()(), tB->getOffset(), tB->getSize(1), 1,
-			  tC->getBuffer()(), tC->getOffset(), tC->getSize(1),
-			  1, &queue, 0, NULL, &event);
-    clWaitForEvents(1, &event);
-    clReleaseEvent(event);
-    clock_t end = clock();
-    if (err != CL_SUCCESS)
-      throw std::runtime_error("clblasSgemmEx() failed with " + std::to_string(err));
-    if (LOG_KERNEL_EXECUTION)
-      std::cout << "Running clblasSgemm " << double(end - begin) / CLOCKS_PER_SEC << " sec" << std::endl;
+    // cl_command_queue queue = OpenCL::getInstance()->getQueue()();
+    // int M = tA->getSize(0);
+    // int N = tB->getSize(1);
+    // int K = tA->getSize(1);
+    // clock_t begin = clock();
+    // cl_event event = NULL;
+    // int err = clblasSgemm(clblasRowMajor, clblasNoTrans, clblasNoTrans, M, N, K,
+    // 			  1,
+    // 			  tA->getBuffer()(), tA->getOffset(), tA->getSize(1),
+    // 			  tB->getBuffer()(), tB->getOffset(), tB->getSize(1), 1,
+    // 			  tC->getBuffer()(), tC->getOffset(), tC->getSize(1),
+    // 			  1, &queue, 0, NULL, &event);
+    // clWaitForEvents(1, &event);
+    // clReleaseEvent(event);
+    // clock_t end = clock();
+    // if (err != CL_SUCCESS)
+    //   throw std::runtime_error("clblasSgemmEx() failed with " + std::to_string(err));
+    // if (LOG_KERNEL_EXECUTION)
+    //   std::cout << "Running clblasSgemm " << double(end - begin) / CLOCKS_PER_SEC << " sec" << std::endl;
+
+    _output = _filter->matrixMultiply(*im2col, _output);
 
     _output->setSizes(outputSizes);
     _filter->setSizes(filterSizes);
