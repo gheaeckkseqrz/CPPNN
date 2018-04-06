@@ -57,7 +57,7 @@ namespace NN
     // Eigen::MatrixXf A = Eigen::Map<Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> >(v.data(), data->getSize(0), data->getSize(1));
     // Spectra::DenseSymMatProd<float> op(A);
     GPUOp op(covarianceMatrix);
-    Spectra::SymEigsSolver<float, Spectra::LARGEST_ALGE, GPUOp> eigs(&op, dims, std::max(dims * 2, 20));
+    Spectra::SymEigsSolver<float, Spectra::LARGEST_ALGE, GPUOp> eigs(&op, dims, std::min(data->getSize(0), std::max(dims * 2, 20)));
     eigs.init();
     eigs.compute();
     if(eigs.info() == Spectra::SUCCESSFUL)

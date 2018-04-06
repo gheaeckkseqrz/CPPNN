@@ -61,3 +61,6 @@ target_link_libraries( Segmenter ArtoNNLib ${OpenCV_LIBS} )
 add_executable( Upres samples/Upres.cpp MatToTensor.cpp )
 target_link_libraries( Upres ArtoNNLib ${OpenCV_LIBS} )
 
+add_executable( PCABenchmark samples/PCABenchmark.cpp )
+target_link_libraries( PCABenchmark ArtoNNLib )
+
