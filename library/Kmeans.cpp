@@ -53,14 +53,14 @@ namespace NN
   {
     Tensor transposedData = data->transpose();
     _centroids = std::make_shared<Tensor>(std::vector<int>({_nbCluster, data->getSize(0)}));
-    (*_centroids)[0].copy(data->means());
+    (*_centroids)[0]->copy(data->means());
     _indexes = std::make_shared<Tensor>(std::vector<int>({data->getSize(1)}));
     for (int i(1) ; i < _nbCluster ; ++i)
       {
-        OpenCLFuncs::getInstance()->kmeans(*data, (*_centroids)[std::pair<int, int>(0, i)], *_indexes, 2, _indexes->getNbElements());
+        OpenCLFuncs::getInstance()->kmeans(*data, (*((*_centroids)[std::pair<int, int>(0, i)])), *_indexes, 2, _indexes->getNbElements());
         std::vector<float> res = _indexes->read();
         int max = std::distance(res.begin(), std::max_element(res.begin(), res.end()));
-        (*_centroids)[i].copy(transposedData[max]);
+        (*_centroids)[i]->copy(*transposedData[max]);
       }
   }
 
@@ -84,7 +84,7 @@ namespace NN
 	    OpenCLFuncs::getInstance()->kmeansReductionStep(scratch, offset, length, scratch.getNbElements());
 	    length = offset;
 	  }
-	OpenCLFuncs::getInstance()->kmeansRetreiveResults(scratch, (*_centroids)[clusterIndex], _centroids->getSize(1));
+	OpenCLFuncs::getInstance()->kmeansRetreiveResults(scratch, (*((*_centroids)[clusterIndex])), _centroids->getSize(1));
       }
 
 //	OpenCLFuncs::getInstance()->kmeansUpdate(*data, *_centroids, *_indexes, scratch, i, data->getNbElements());

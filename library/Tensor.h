@@ -52,8 +52,8 @@ namespace NN
 
     std::string print(bool data = false) const;
 
-    Tensor operator[](int index);
-    Tensor operator[](std::pair<int, int> range);
+    std::shared_ptr<Tensor> operator[](int index);
+    std::shared_ptr<Tensor> operator[](std::pair<int, int> range);
 
   protected:
     size_t _offset;

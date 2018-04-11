@@ -11,7 +11,7 @@ kernel void convolutionImg2Cols(Tensor input, Tensor output, int filterW, int fi
       int inC = y / (filterW * filterH);
       int inDY = ((y % (filterW * filterH) / filterW) - (filterH / 2)) * dilationH;
       int inDX = ((y % (filterW * filterH) % filterW) - (filterW / 2)) * dilationW;
-      output_data[pos] = sample3DTensorWithPadding(input_data, input_dims, inC, inX + inDX, inY + inDY, input_offset);
+      output_data[pos + output_offset] = sample3DTensorWithPadding(input_data, input_dims, inC, inX + inDX, inY + inDY, input_offset);
     }
   else
     {

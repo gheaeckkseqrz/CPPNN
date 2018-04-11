@@ -1,6 +1,7 @@
 #ifndef __STORAGE_H__
 #define __STORAGE_H__
 
+#include <iostream>
 #include "cl.hpp"
 
 namespace NN
@@ -12,7 +13,7 @@ namespace NN
     /* Storage(cl_mem_flags flags =  CL_MEM_READ_WRITE ); */
     Storage(size_t size, cl_mem_flags flags =  CL_MEM_READ_WRITE );
     Storage(std::vector<T> const &data, cl_mem_flags flags =  CL_MEM_READ_WRITE );
-    virtual ~Storage() { }
+    virtual ~Storage() { /* std::cout << "~Storage(" << _size << ")" << std::endl; */ }
 
     cl::Buffer getBuffer() const;
     std::vector<T> read(size_t offset = 0, size_t size = -1) const;

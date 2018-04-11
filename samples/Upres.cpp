@@ -1,10 +1,11 @@
+#include <ctime>
 #include <iostream>
 #include "Node.h"
 #include "../MatToTensor.h"
 #include "Placeholder.h"
 #include "TensorflowParser.h"
 
-#define NETWORK_FILE "/Users/wilmot_p/Desktop/optimized_model.meta"
+#define NETWORK_FILE "/home/wilmot_p/optimized_model.meta"
 
 int main(int ac, char **av)
 {
@@ -29,6 +30,7 @@ int main(int ac, char **av)
       return -1;
     }
 
+  clock_t begin = clock();
   inputImage->div(255);
   inputImage->mul(2);
   inputImage->sub(1.0f);
@@ -39,6 +41,8 @@ int main(int ac, char **av)
   outputImage->add(1.0f);
   outputImage->mul(2.0f);
   outputImage->mul(255);
+  clock_t end = clock();
+  std::cout << "Processing Time => " << double(end - begin) / CLOCKS_PER_SEC << " sec" << std::endl;
   saveTensorAsImage(outputImage, "out.png");
   return 0;
 }

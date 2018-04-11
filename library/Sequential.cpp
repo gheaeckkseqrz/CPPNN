@@ -15,7 +15,7 @@ namespace NN
     std::shared_ptr<Tensor> current = input;
     for (int i(0) ; i < _modules.size() ; ++i)
       {
-    	std::cout << "[Sequential " << i + 1 << " / " << _modules.size() << "] - " << *(_modules[i]) << std::endl;
+	//	std::cout << "[Sequential " << i + 1 << " / " << _modules.size() << "] - " << *(_modules[i]) << std::endl;
     	current = _modules[i]->forward(current);
 	if (!_outputsRetainPolicy.empty() && _outputsRetainPolicy[i] == false)
 	  _modules[i]->clearOutput();
@@ -32,7 +32,7 @@ namespace NN
 
   void Sequential::remove(unsigned int index)
   {
-    std::cout << "Removing " << *_modules[index] << std::endl;
+    // std::cout << "Removing " << *_modules[index] << std::endl;
     _modules.erase(_modules.begin() + index);
   }
 

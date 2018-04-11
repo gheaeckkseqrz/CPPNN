@@ -76,7 +76,7 @@ namespace NN
       {
         std::shared_ptr<Tensor> output = _network->get(_layers[i])->getOutput();
 	output->mul(_weights[i]);
-        (*maps)[std::pair<int, int>(currentOffset, currentOffset + output->getSize(0))].copy(*output);
+        (*maps)[std::pair<int, int>(currentOffset, currentOffset + output->getSize(0))]->copy(*output);
 	currentOffset += output->getSize(0);
       }
 

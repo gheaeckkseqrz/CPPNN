@@ -64,3 +64,6 @@ target_link_libraries( Upres ArtoNNLib ${OpenCV_LIBS} )
 add_executable( PCABenchmark samples/PCABenchmark.cpp )
 target_link_libraries( PCABenchmark ArtoNNLib )
 
+add_executable( ConvBenchmark samples/ConvBenchmark.cpp )
+target_link_libraries( ConvBenchmark ArtoNNLib )
+

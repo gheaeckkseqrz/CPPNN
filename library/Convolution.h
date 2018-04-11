@@ -18,6 +18,9 @@ namespace NN
     virtual std::string print() const;
 
   protected:
+    void processBlock(std::shared_ptr<Tensor> input, std::shared_ptr<Tensor> im2col, std::pair<int, int> slice, int kernelH, int kernelW);
+
+  protected:
     std::shared_ptr<Tensor> _filter;
     std::shared_ptr<Tensor> _bias;
     int _padW;

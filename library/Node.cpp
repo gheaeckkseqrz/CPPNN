@@ -18,14 +18,17 @@ namespace NN
 
   std::shared_ptr<Tensor> Node::evaluate(ComputeGraph const &graph)
   {
+    std::shared_ptr<Tensor> ret;
     if (_module == nullptr)
-      return graph.getNode(_inputs.front())->evaluate(graph);
-    if (_inputs.empty())
-      return _module->forward(nullptr);
-    if (_inputs.size() == 1)
-      return _module->forward(graph.getNode(_inputs.front())->evaluate(graph));
+      ret = graph.getNode(_inputs.front())->evaluate(graph);
+    else if (_inputs.empty())
+      ret = _module->forward(nullptr);
+    else if (_inputs.size() == 1)
+      ret = _module->forward(graph.getNode(_inputs.front())->evaluate(graph));
     else
       std::cerr << "Basic Node base class doesn't support multiple inputs" << std::endl;
-    return nullptr;
+    if (_module)
+      _module->clearOutput();
+    return ret;
   }
 }

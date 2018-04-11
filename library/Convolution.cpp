@@ -43,6 +43,10 @@ namespace NN
       throw std::runtime_error("Convolution recieved invalid input");
     if (_filter->getSize(1) != input->getSize(0))
 	throw std::runtime_error("Convolution recieved invalid input for filter");
+
+    std::cout << "CONV " << _filter->getSize(1) << " -> " << _filter->getSize(0) << std::endl;
+
+    std::vector<int> filterSizes = _filter->getSizes();
     std::vector<int> outputSizes(3, 0);
     outputSizes[0] = _filter->getSize(0);
     outputSizes[1] = (int)floor((float)((input->getSize(1) + 2 * _padH - _dilationH * (_filter->getSize(2) - 1) - 1) / _dH)) + 1;
@@ -50,48 +54,32 @@ namespace NN
 
     if (_output == nullptr || _output->getSizes() != outputSizes)
       _output = std::make_shared<Tensor>(outputSizes);
-
     _output->fill(0);
 
     std::vector<int> im2colSizes({(int)(input->getSize(0) * _filter->getSize(2) * _filter->getSize(3)), (int)(_output->getSize(1) * _output->getSize(2))});
     std::shared_ptr<Tensor> im2col = std::make_shared<Tensor>(im2colSizes);
 
-    OpenCLFuncs::getInstance()->convolutionImg2Cols(*input, *im2col, _filter->getSize(2), _filter->getSize(3), _padW, _padH, _dilationW, _dilationH, im2col->getNbElements());
-    std::vector<int> filterSizes = _filter->getSizes();
     _filter->flatten();
     _output->flatten();
 
-    // std::shared_ptr<Tensor> tA = _filter;
-    // std::shared_ptr<Tensor> tB = im2col;
-    // std::shared_ptr<Tensor> tC = _output;
-
-    // cl_command_queue queue = OpenCL::getInstance()->getQueue()();
-    // int M = tA->getSize(0);
-    // int N = tB->getSize(1);
-    // int K = tA->getSize(1);
-    // clock_t begin = clock();
-    // cl_event event = NULL;
-    // int err = clblasSgemm(clblasRowMajor, clblasNoTrans, clblasNoTrans, M, N, K,
-    // 			  1,
-    // 			  tA->getBuffer()(), tA->getOffset(), tA->getSize(1),
-    // 			  tB->getBuffer()(), tB->getOffset(), tB->getSize(1), 1,
-    // 			  tC->getBuffer()(), tC->getOffset(), tC->getSize(1),
-    // 			  1, &queue, 0, NULL, &event);
-    // clWaitForEvents(1, &event);
-    // clReleaseEvent(event);
-    // clock_t end = clock();
-    // if (err != CL_SUCCESS)
-    //   throw std::runtime_error("clblasSgemmEx() failed with " + std::to_string(err));
-    // if (LOG_KERNEL_EXECUTION)
-    //   std::cout << "Running clblasSgemm " << double(end - begin) / CLOCKS_PER_SEC << " sec" << std::endl;
-
-    _output = _filter->matrixMultiply(*im2col, _output);
+    for (int i(0) ; i < outputSizes[0] ; ++i)
+      {
+	processBlock(input, im2col, std::pair<int, int>(i, i+1), filterSizes[2], filterSizes[3]);
+      }
 
     _output->setSizes(outputSizes);
     _filter->setSizes(filterSizes);
     if (_bias != nullptr)
       _output->add(*_bias);
     return _output;
+  }
+
+  void Convolution::processBlock(std::shared_ptr<Tensor> input, std::shared_ptr<Tensor> im2col, std::pair<int, int> slice, int kernelH, int kernelW)
+  {
+    std::shared_ptr<Tensor> outputSlice = (*_output)[slice];
+    std::shared_ptr<Tensor> filterSlice = (*_filter)[slice];
+    OpenCLFuncs::getInstance()->convolutionImg2Cols(*input, *im2col, kernelH, kernelW, _padW, _padH, _dilationW, _dilationH, im2col->getNbElements());
+    filterSlice->matrixMultiply(*im2col, outputSlice);
   }
 
   std::string Convolution::print() const

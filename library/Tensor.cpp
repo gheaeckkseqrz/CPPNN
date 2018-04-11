@@ -303,22 +303,22 @@ namespace NN
     return s;
   }
 
-  Tensor Tensor::operator[](int index)
+  std::shared_ptr<Tensor> Tensor::operator[](int index)
   {
     std::vector<int> sizes(_sizes.begin() + 1, _sizes.end());
-    Tensor ret = Tensor(sizes);
-    ret._storage = _storage;
-    ret._offset = _offset + (index * ret.getNbElements());
+    std::shared_ptr<Tensor> ret = std::make_shared<Tensor>(sizes);
+    ret->_storage = _storage;
+    ret->_offset = _offset + (index * ret->getNbElements());
     return ret;
   }
 
-  Tensor Tensor::operator[](std::pair<int, int> range)
+  std::shared_ptr<Tensor> Tensor::operator[](std::pair<int, int> range)
   {
     std::vector<int> sizes(_sizes);
     sizes[0] = range.second - range.first;
-    Tensor ret = Tensor(sizes);
-    ret._storage = _storage;
-    ret._offset = _offset + (range.first * (getNbElements() / _sizes[0]));
+    std::shared_ptr<Tensor> ret = std::make_shared<Tensor>(sizes);
+    ret->_storage = _storage;
+    ret->_offset = _offset + (range.first * (getNbElements() / _sizes[0]));
     return ret;
   }
 
