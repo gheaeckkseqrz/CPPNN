@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.1)
 project( ArtoNNLib VERSION 1.0 DESCRIPTION "Neural Network Runtime" )
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_BUILD_TYPE Debug)
 find_package( OpenCL REQUIRED )
 find_package( clBLAS REQUIRED )
@@ -23,6 +23,7 @@ add_library( ArtoNNLib
   library/NodeMul.cpp
   library/OpenCL.cpp
   library/OpenCLFuncs.cpp
+  library/ParametricModel.cpp
   library/PCA.cpp
   library/PixelShuffle.cpp
   library/Placeholder.cpp
@@ -36,6 +37,7 @@ add_library( ArtoNNLib
   library/TensorflowFactory.cpp
   library/TensorflowParser.cpp
   library/TensorflowTensor.cpp
+  library/TextureLibrary.cpp
   library/TorchConvolution.cpp
   library/TorchObject.cpp
   library/TorchLoader.cpp
@@ -50,7 +52,7 @@ add_library( ArtoNNLib
   library/TorchTensor.cpp )
 set_target_properties( ArtoNNLib PROPERTIES VERSION ${PROJECT_VERSION})
 set_target_properties( ArtoNNLib PROPERTIES SOVERSION 1)
-target_link_libraries( ArtoNNLib ${OpenCL_LIBRARY} ${CLBLAS_LIBRARIES} )
+target_link_libraries( ArtoNNLib ${OpenCL_LIBRARY} ${CLBLAS_LIBRARIES} ${OpenCV_LIBS} -lstdc++fs)
 
 add_executable( TestNN tests/main.cpp )
 target_link_libraries( TestNN ArtoNNLib )
@@ -66,4 +68,7 @@ target_link_libraries( PCABenchmark ArtoNNLib )
 
 add_executable( ConvBenchmark samples/ConvBenchmark.cpp )
 target_link_libraries( ConvBenchmark ArtoNNLib )
+
+add_executable( TextureLibrary samples/TextureLibrary.cpp MatToTensor.cpp )
+target_link_libraries( TextureLibrary ArtoNNLib ${OpenCV_LIBS} )
 

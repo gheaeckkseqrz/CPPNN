@@ -42,9 +42,7 @@ namespace NN
     if (input == nullptr || input->getSizes().size() != 3)
       throw std::runtime_error("Convolution recieved invalid input");
     if (_filter->getSize(1) != input->getSize(0))
-	throw std::runtime_error("Convolution recieved invalid input for filter");
-
-    std::cout << "CONV " << _filter->getSize(1) << " -> " << _filter->getSize(0) << std::endl;
+      throw std::runtime_error("Convolution recieved invalid input for filter");
 
     std::vector<int> filterSizes = _filter->getSizes();
     std::vector<int> outputSizes(3, 0);
@@ -62,10 +60,12 @@ namespace NN
     _filter->flatten();
     _output->flatten();
 
-    for (int i(0) ; i < outputSizes[0] ; ++i)
-      {
-	processBlock(input, im2col, std::pair<int, int>(i, i+1), filterSizes[2], filterSizes[3]);
-      }
+    // for (int i(0) ; i < outputSizes[0] ; ++i)
+    //   {
+    //	processBlock(input, im2col, std::pair<int, int>(i, i+1), filterSizes[2], filterSizes[3]);
+      // }
+
+    processBlock(input, im2col, std::pair<int, int>(0, input->getSize(0)), filterSizes[2], filterSizes[3]);
 
     _output->setSizes(outputSizes);
     _filter->setSizes(filterSizes);
