@@ -225,8 +225,11 @@ namespace NN
     return res;
   }
 
-  std::shared_ptr<Tensor> Tensor::covariance()
+  std::shared_ptr<Tensor> Tensor::covariance(bool half, bool flatten)
   {
+    std::vector<int> backupSizes = getSizes();
+    if (flatten)
+      this->flatten();
     assert(getSizes().size() == 2);
     Tensor mean = means();
     sub(mean);
@@ -238,9 +241,17 @@ namespace NN
 		1, &queue, 0, NULL, NULL);
     if (err != CL_SUCCESS)
       throw std::runtime_error("clblasSsyrk failled with error code " + std::to_string(err));
-    OpenCLFuncs::getInstance()->tensorDiagCopy(*result, result->getNbElements());
+    if (half)
+      {
+	std::shared_ptr<Tensor> upperTriangle = std::make_shared<Tensor>(std::vector<int>({(getSize(0) + 1) * getSize(0)  /2}));
+	OpenCLFuncs::getInstance()->tensorDiagExtract(*result, *upperTriangle, result->getNbElements());
+	result = upperTriangle;
+      }
+    else
+      OpenCLFuncs::getInstance()->tensorDiagCopy(*result, result->getNbElements());
     add(mean);
     result->div(getSize(1) - 1);
+    setSizes(backupSizes);
     return result;
   }
 

@@ -25,10 +25,13 @@ namespace NN
   void TextureLibrary::addDirectory(std::string const &path)
   {
     std::experimental::filesystem::recursive_directory_iterator d(path);
+    int i = 1;
     for(auto &f : d)
       {
 	addImage(f.path());
-	std::cout << f << std::endl;
+	std::cout << "[" << i++ << "]" << f << std::endl;
+	if (i > 1000)
+	  break;
       }
     std::cout << "Library contains " << _library.size() << " entries" << std::endl;
   }
@@ -36,11 +39,11 @@ namespace NN
   ParametricModel TextureLibrary::computeParametricModel(std::shared_ptr<Tensor> image)
   {
     _descriptorNetwork->forward(image);
-    std::vector<float> relu1_1 = _descriptorNetwork->get(1)->getOutput()->read();
-    std::vector<float> relu2_1 = _descriptorNetwork->get(6)->getOutput()->read();
-    std::vector<float> relu3_1 = _descriptorNetwork->get(11)->getOutput()->read();
-    std::vector<float> relu4_1 = _descriptorNetwork->get(20)->getOutput()->read();
-    std::vector<float> relu5_1 = _descriptorNetwork->get(29)->getOutput()->read();
+    std::vector<float> relu1_1 = _descriptorNetwork->get(1)->getOutput()->covariance(true, true)->read();
+    std::vector<float> relu2_1 = _descriptorNetwork->get(6)->getOutput()->covariance(true, true)->read();
+    std::vector<float> relu3_1 = _descriptorNetwork->get(11)->getOutput()->covariance(true, true)->read();
+    std::vector<float> relu4_1 = _descriptorNetwork->get(20)->getOutput()->covariance(true, true)->read();
+    std::vector<float> relu5_1 = _descriptorNetwork->get(29)->getOutput()->covariance(true, true)->read();
     return ParametricModel(relu1_1, relu2_1, relu3_1, relu4_1, relu5_1);
   }
 }
