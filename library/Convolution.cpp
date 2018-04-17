@@ -62,10 +62,10 @@ namespace NN
 
     // for (int i(0) ; i < outputSizes[0] ; ++i)
     //   {
-    //	processBlock(input, im2col, std::pair<int, int>(i, i+1), filterSizes[2], filterSizes[3]);
-      // }
+    // 	processBlock(input, im2col, std::pair<int, int>(i, i+1), filterSizes[2], filterSizes[3]);
+    //   }
 
-    processBlock(input, im2col, std::pair<int, int>(0, input->getSize(0)), filterSizes[2], filterSizes[3]);
+        processBlock(input, im2col, std::pair<int, int>(0, _output->getSize(0)), filterSizes[2], filterSizes[3]);
 
     _output->setSizes(outputSizes);
     _filter->setSizes(filterSizes);
