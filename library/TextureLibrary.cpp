@@ -46,4 +46,9 @@ namespace NN
     std::vector<float> relu5_1 = _descriptorNetwork->get(29)->getOutput()->covariance(true, true)->read();
     return ParametricModel(relu1_1, relu2_1, relu3_1, relu4_1, relu5_1);
   }
+
+  std::vector<std::string> TextureLibrary::findNN(std::shared_ptr<Tensor> example, int n)
+  {
+
+  }
 }
