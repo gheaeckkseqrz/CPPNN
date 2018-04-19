@@ -39,6 +39,7 @@ namespace NN
     Tensor &sub(Tensor const &o);
     Tensor &mul(Tensor const &o);
     Tensor &div(Tensor const &o);
+    Tensor &pow(float value);
     Tensor &fill(float value);
     Tensor &copy(Tensor const &o);
     Tensor &copy(std::vector<float> const &o);

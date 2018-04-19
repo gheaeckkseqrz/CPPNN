@@ -155,8 +155,10 @@ namespace NN
   {
     if (o.getNbElements() == _sizes[0])
       OpenCLFuncs::getInstance()->tensorChannelSub(*this, *this, o, getNbElements());
-    else
+    else if (getNbElements()  == o.getNbElements())
       OpenCLFuncs::getInstance()->tensorElementWiseSub(*this, *this, o, getNbElements());
+    else
+      throw std::runtime_error("Can't run sub on " + print() + " && " + o.print());
     return *this;
   }
 
@@ -175,6 +177,12 @@ namespace NN
       OpenCLFuncs::getInstance()->tensorChannelDiv(*this, *this, o, getNbElements());
     else
       OpenCLFuncs::getInstance()->tensorElementWiseDiv(*this, *this, o, getNbElements());
+    return *this;
+  }
+
+  Tensor &Tensor::pow(float value)
+  {
+    OpenCLFuncs::getInstance()->tensorPow(*this, *this, value, getNbElements());
     return *this;
   }
 
@@ -234,6 +242,7 @@ namespace NN
     Tensor mean = means();
     sub(mean);
     std::shared_ptr<Tensor> result = std::make_shared<Tensor>(std::vector<int>({getSize(0), getSize(0)}));
+    result->fill(0);
     cl_command_queue queue = OpenCL::getInstance()->getQueue()();
     int err = clblasSsyrk(clblasRowMajor, clblasUpper, clblasNoTrans,
 		getSize(0), getSize(1), 1.0f, getBuffer()(), getOffset(), getSize(1),
