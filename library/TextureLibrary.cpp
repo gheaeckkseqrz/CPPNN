@@ -61,7 +61,6 @@ namespace NN
   std::vector<std::string> TextureLibrary::findNN(std::shared_ptr<Tensor> example, int n)
   {
     std::vector<std::pair<float, std::string>> bestResults;
-
     std::shared_ptr<Tensor> exampleFullModel = std::make_shared<Tensor>(computeParametricModel(example).getFullModel());
     std::shared_ptr<Tensor> indexes = std::make_shared<Tensor>(std::vector<float>(MODEL_SIZE, 1.0f));
     int i = 0;
@@ -99,16 +98,14 @@ namespace NN
 
 	    std::sort(std::begin(bestResults), std::end(bestResults), [](std::pair<float, std::string> a, std::pair<float, std::string> b) { return a.first < b.first; });
 	    bestResults.resize(n);
-
-	    std::cout << "======= Best results after scanning the first " << totalTested << " entries" << std::endl;
-	    for (auto p : bestResults)
-	      std::cout << "# [" << p.first << "] -> " << p.second << std::endl;
-
 	    i = 0;
 	    paths.clear();
 	  }
       }
-    return std::vector<std::string>();
+
+    for (std::pair<float, std::string> r : bestResults)
+      paths.push_back(r.second);
+    return paths;
   }
 
   std::vector<int> TextureLibrary::findBestIndices(std::vector<float> &data, int n)
