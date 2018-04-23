@@ -18,12 +18,12 @@ namespace NN
   std::vector<float> ParametricModel::getFullModel() const
   {
     std::vector<float> fullModel;
-    // fullModel.reserve(MODEL_SIZE);
+    fullModel.reserve(MODEL_SIZE);
     fullModel.insert(fullModel.end(), _relu1_1.begin(), _relu1_1.end());
-    // fullModel.insert(fullModel.end(), _relu2_1.begin(), _relu2_1.end());
-    // fullModel.insert(fullModel.end(), _relu3_1.begin(), _relu3_1.end());
-    // fullModel.insert(fullModel.end(), _relu4_1.begin(), _relu4_1.end());
-    // fullModel.insert(fullModel.end(), _relu5_1.begin(), _relu5_1.end());
+    fullModel.insert(fullModel.end(), _relu2_1.begin(), _relu2_1.end());
+    fullModel.insert(fullModel.end(), _relu3_1.begin(), _relu3_1.end());
+    fullModel.insert(fullModel.end(), _relu4_1.begin(), _relu4_1.end());
+    fullModel.insert(fullModel.end(), _relu5_1.begin(), _relu5_1.end());
     return fullModel;
   }
 }

@@ -4,8 +4,9 @@
 #include <string>
 #include <vector>
 
-//#define MODEL_SIZE ((512 * 512 + 512) / 2 + (512 * 512 + 512) / 2 + (256 * 256 + 256) / 2 + (128 * 128 + 128) / 2 + (64 * 64 + 64) / 2)
-#define MODEL_SIZE ((64 * 64 + 64) / 2)
+#define MODEL_SIZE ((512 * 512 + 512) / 2 + (512 * 512 + 512) / 2 + (256 * 256 + 256) / 2 + (128 * 128 + 128) / 2 + (64 * 64 + 64) / 2)
+//#define MODEL_SIZE ((64 * 64 + 64) / 2)
+
 namespace NN
 {
   class ParametricModel
