@@ -126,6 +126,7 @@ TEST_CASE( "Tensor Element wise addition with offset", "[Tensor]" )
   Tensor t1(v1);
   Tensor t2(v2);
   t2.setOffset(4);
+  t2.setSizes(std::vector<int>({8}));
 
   REQUIRE ( t1.read() == v1 );
   REQUIRE ( t2.read() == std::vector<float>({1, 0, 5, 4.7, 9.8,  12, 7.3,  -4.1}) );
@@ -160,6 +161,7 @@ TEST_CASE( "Tensor Element wise substraction with offset", "[Tensor]" )
   Tensor t1(v1);
   Tensor t2(v2);
   t2.setOffset(4);
+  t2.setSizes(std::vector<int>({8}));
 
   REQUIRE ( t1.read() == v1 );
   REQUIRE ( t2.read() == std::vector<float>({1, 0, 5, 4.7, 9.8, 12, 7.3, -4.1}) );
