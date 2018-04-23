@@ -19,18 +19,7 @@ namespace NN
     Tensor previousIndexes(_indexes->getSizes());
     for (int i(0) ; i < maxIteration ; ++i)
       {
- 	// std::cout << "====================================================================================" << std::endl;
-	// std::cout << "Iteration Centroids " << i << std::endl;
-	// std::cout << _centroids->print(true);
-	// std::cout << "====================================================================================" << std::endl;
-
         OpenCLFuncs::getInstance()->kmeans(*data, *_centroids, *_indexes, 0, _indexes->getNbElements());
-
-	// std::cout << "====================================================================================" << std::endl;
-	// std::cout << "Iteration Indexes " << i << std::endl;
-	// std::cout << _indexes->print(true);
-	// std::cout << "====================================================================================" << std::endl;
-
 	if (_indexes->dataEquals(previousIndexes))
 	  {
 	    std::cout << "Converged after " << i << " iterations" << std::endl;

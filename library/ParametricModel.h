@@ -4,6 +4,9 @@
 #include <string>
 #include <vector>
 
+#define MODEL_SIZE ((512 * 512 + 512) / 2 + (512 * 512 + 512) / 2 + (256 * 256 + 256) / 2 + (128 * 128 + 128) / 2 + (64 * 64 + 64) / 2)
+//#define MODEL_SIZE ((64 * 64 + 64) / 2)
+
 namespace NN
 {
   class ParametricModel
@@ -15,6 +18,8 @@ namespace NN
 		    std::vector<float> &relu3_1,
 		    std::vector<float> &relu4_1,
 		    std::vector<float> &relu5_1);
+
+    std::vector<float> getFullModel() const;
 
   private:
     std::vector<float> _relu1_1;

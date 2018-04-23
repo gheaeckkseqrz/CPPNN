@@ -181,7 +181,6 @@ TEST_CASE( "Tensor Covariance - Square Tensor", "[Tensor]" )
   REQUIRE(cov->read() == expectedCovariance);
 }
 
-
 TEST_CASE( "Tensor Covariance - Non Square Tensor", "[Tensor]" )
 {
   std::vector<float> data;
@@ -191,4 +190,16 @@ TEST_CASE( "Tensor Covariance - Non Square Tensor", "[Tensor]" )
   std::shared_ptr<Tensor> cov = t.covariance();
   std::vector<float> expectedCovariance(25, 3.5);
   REQUIRE(cov->read() == expectedCovariance);
+}
+
+TEST_CASE( "Tensor Flat Covariance", "[Tensor]" )
+{
+  std::vector<float> data({1, 2, 3, 6, 12, 24, 48, 96, 192});
+  Tensor t(std::vector<int>({3, 3}), data);
+  std::shared_ptr<Tensor> cov = t.covariance();
+  std::vector<float> expectedCovariance({1, 9, 72, 9, 84, 672, 72, 672, 5376});
+  REQUIRE(cov->read() == expectedCovariance);
+  std::shared_ptr<Tensor> flatcov = t.covariance(true);
+  std::vector<float> expectedFlatCovariance({1, 9, 72, 84, 672, 5376});
+  REQUIRE(flatcov->read() == expectedFlatCovariance);
 }

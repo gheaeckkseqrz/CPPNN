@@ -39,7 +39,7 @@ class OpenCL
   template<typename T> void writeToBuffer(cl::Buffer const &b, std::vector<T> const &data, size_t offset = 0)
     {
       size_t size = data.size() * sizeof(T);
-      assert(_queue.enqueueWriteBuffer(b, CL_TRUE, offset, size, data.data()) == CL_SUCCESS);
+      assert(_queue.enqueueWriteBuffer(b, CL_TRUE, offset * sizeof(T), size, data.data()) == CL_SUCCESS);
     }
 
 
