@@ -7,3 +7,6 @@ build
 *.t7
 OpenCLFuncs.cpp
 OpenCLFuncs.h
+tests/VGG_ILSVRC_19_layers.caffemodel
+tests/VGG_ILSVRC_19_layers_deploy.prototxt
+tests/VGG_ILSVRC_19_layers_deploy.prototxt.lua
