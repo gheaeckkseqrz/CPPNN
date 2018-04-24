@@ -38,7 +38,7 @@ namespace NN
     int i = 0;
     for(auto &f : d)
       {
-	addImage(f.path());
+	addImage(f.path().string());
 	std::cout << "[" << i++ << "]" << f << std::endl;
 	if (i > _maxLibraryCapacity)
 	  break;

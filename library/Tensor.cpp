@@ -1,5 +1,6 @@
 #include <algorithm>
 #include <clBLAS.h>
+#include <ctime>
 
 #include "Tensor.h"
 #include "OpenCL.h"

@@ -91,8 +91,8 @@ TEST_CASE( "Tensor Means", "[Tensor]" )
 
 TEST_CASE( "Tensor Data Equals", "[Tensor]" )
 {
-  std::vector<float>     v1({1 , 2, 3, 4, 5, 6, 7 , 8   , 9   , 10, -5 , 0   });
-  std::vector<float>     v2({9 , 6, 2, 5, 1, 0, 5 , 4.7 , 9.8 , 12, 7.3, -4.1});
+  std::vector<float>     v1({1 , 2, 3, 4, 5, 6, 7 , 8   ,  9   ,  10, -5 ,  0   });
+  std::vector<float>     v2({9 , 6, 2, 5, 1, 0, 5 , 4.7f , 9.8f , 12, 7.3f, -4.1f});
   Tensor t1(v1);
   Tensor t2(v2);
   REQUIRE(t1.dataEquals(t1));
@@ -104,8 +104,8 @@ TEST_CASE( "Tensor Data Equals", "[Tensor]" )
 TEST_CASE( "Tensor Element wise addition", "[Tensor]" )
 {
   std::vector<float>     v1({1 , 2, 3, 4, 5, 6, 7 , 8   , 9   , 10, -5 , 0   });
-  std::vector<float>     v2({9 , 6, 2, 5, 1, 0, 5 , 4.7 , 9.8 , 12, 7.3, -4.1});
-  std::vector<float> result({10, 8, 5, 9, 6, 6, 12, 12.7, 18.8, 22, 2.3, -4.1});
+  std::vector<float>     v2({9 , 6, 2, 5, 1, 0, 5 , 4.7f , 9.8f , 12, 7.3f, -4.1f});
+  std::vector<float> result({10, 8, 5, 9, 6, 6, 12, 12.7f, 18.8f, 22, 2.3f, -4.1f});
   Tensor t1(v1);
   Tensor t2(v2);
 
@@ -120,15 +120,15 @@ TEST_CASE( "Tensor Element wise addition", "[Tensor]" )
 
 TEST_CASE( "Tensor Element wise addition with offset", "[Tensor]" )
 {
-  std::vector<float>                  v1({1, 2, 3, 4,   5,    6,  7,    8});
-  std::vector<float>     v2({9 , 6, 2, 5, 1, 0, 5, 4.7, 9.8,  12, 7.3,  -4.1});
-  std::vector<float>              result({2, 2, 8, 8.7, 14.8, 18, 14.3, 3.9});
+  std::vector<float>                  v1({1, 2, 3, 4,    5,     6,  7,     8});
+  std::vector<float>     v2({9 , 6, 2, 5, 1, 0, 5, 4.7f, 9.8f,  12, 7.3f,  -4.1f});
+  std::vector<float>              result({2, 2, 8, 8.7f, 14.8f, 18, 14.3f, 3.9f});
   Tensor t1(v1);
   Tensor t2(v2);
   t2.setOffset(4);
 
   REQUIRE ( t1.read() == v1 );
-  REQUIRE ( t2.read() == std::vector<float>({1, 0, 5, 4.7, 9.8,  12, 7.3,  -4.1}) );
+  REQUIRE ( t2.read() == std::vector<float>({1, 0, 5, 4.7f, 9.8f,  12, 7.3f,  -4.1f}) );
   REQUIRE_NOTHROW(t1.add(t2));
   std::vector<float> computed = t1.read();
   for (int i(0) ; i < computed.size() ; ++i)
@@ -137,9 +137,9 @@ TEST_CASE( "Tensor Element wise addition with offset", "[Tensor]" )
 
 TEST_CASE( "Tensor Element wise substraction", "[Tensor]" )
 {
-  std::vector<float>     v1({1 , 2,  3, 4,  5, 6, 7 , 8,   9,    10, -5 ,   0   });
-  std::vector<float>     v2({9 , 6,  2, 5,  1, 0, 5 , 4.7, 9.8,  12, 7.3,   -4.1});
-  std::vector<float> result({-8, -4, 1, -1, 4, 6, 2,  3.3, -0.8, -2, -12.3, 4.1});
+  std::vector<float>     v1({1 , 2,  3, 4,  5, 6, 7 , 8,    9,     10, -5 ,    0   });
+  std::vector<float>     v2({9 , 6,  2, 5,  1, 0, 5 , 4.7f, 9.8f,  12, 7.3f,   -4.1f});
+  std::vector<float> result({-8, -4, 1, -1, 4, 6, 2,  3.3f, -0.8f, -2, -12.3f, 4.1f});
   Tensor t1(v1);
   Tensor t2(v2);
 
@@ -154,17 +154,17 @@ TEST_CASE( "Tensor Element wise substraction", "[Tensor]" )
 
 TEST_CASE( "Tensor Element wise substraction with offset", "[Tensor]" )
 {
-  std::vector<float>                  v1({1, 2, 3,  4,    5,    6,  7,    8});
-  std::vector<float>     v2({9 , 6, 2, 5, 1, 0, 5,  4.7,  9.8,  12, 7.3,  -4.1});
-  std::vector<float>              result({0, 2, -2, -0.7, -4.8, -6, -0.3, 12.1});
+  std::vector<float>                  v1({1, 2, 3,  4,     5,     6,  7,     8});
+  std::vector<float>     v2({9 , 6, 2, 5, 1, 0, 5,  4.7f,  9.8f,  12, 7.3f,  -4.1f});
+  std::vector<float>              result({0, 2, -2, -0.7f, -4.8f, -6, -0.3f, 12.1f});
   Tensor t1(v1);
   Tensor t2(v2);
   t2.setOffset(4);
 
   REQUIRE ( t1.read() == v1 );
-  REQUIRE ( t2.read() == std::vector<float>({1, 0, 5, 4.7, 9.8, 12, 7.3, -4.1}) );
+  REQUIRE ( t2.read() == std::vector<float>({1, 0, 5, 4.7f, 9.8f, 12, 7.3f, -4.1f}) );
   REQUIRE_NOTHROW(t1.sub(t2));
-  REQUIRE ( t2.read() == std::vector<float>({1, 0, 5, 4.7, 9.8, 12, 7.3, -4.1}) );
+  REQUIRE ( t2.read() == std::vector<float>({1, 0, 5, 4.7f, 9.8f, 12, 7.3f, -4.1f}) );
   std::vector<float> computed = t1.read();
   for (int i(0) ; i < computed.size() ; ++i)
     REQUIRE( Approx(computed[i]) == result[i] );
