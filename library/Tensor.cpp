@@ -81,7 +81,7 @@ namespace NN
 
   std::vector<float> Tensor::read() const
   {
-    return _storage->read(_offset, getNbElements() - _offset);
+    return _storage->read(_offset, getNbElements());
   }
 
   cl::Buffer Tensor::getBuffer() const
@@ -147,8 +147,10 @@ namespace NN
   {
     if (o.getNbElements() == _sizes[0])
       OpenCLFuncs::getInstance()->tensorChannelAdd(*this, *this, o, getNbElements());
-    else
+    else if (getNbElements()  == o.getNbElements())
       OpenCLFuncs::getInstance()->tensorElementWiseAdd(*this, *this, o, getNbElements());
+    else
+      throw std::runtime_error("Can't run mul on " + print() + " && " + o.print());
     return *this;
   }
 
@@ -167,8 +169,10 @@ namespace NN
   {
     if (o.getNbElements() == _sizes[0])
       OpenCLFuncs::getInstance()->tensorChannelMul(*this, *this, o, getNbElements());
-    else
+    else if (getNbElements()  == o.getNbElements())
       OpenCLFuncs::getInstance()->tensorElementWiseMul(*this, *this, o, getNbElements());
+    else
+      throw std::runtime_error("Can't run mul on " + print() + " && " + o.print());
     return *this;
   }
 
@@ -176,8 +180,10 @@ namespace NN
   {
     if (o.getNbElements() == _sizes[0])
       OpenCLFuncs::getInstance()->tensorChannelDiv(*this, *this, o, getNbElements());
-    else
+    else if (getNbElements()  == o.getNbElements())
       OpenCLFuncs::getInstance()->tensorElementWiseDiv(*this, *this, o, getNbElements());
+    else
+      throw std::runtime_error("Can't run div on " + print() + " && " + o.print());
     return *this;
   }
 
