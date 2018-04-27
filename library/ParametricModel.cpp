@@ -15,15 +15,32 @@ namespace NN
   {
   }
 
-  std::vector<float> ParametricModel::getFullModel() const
+  std::vector<float> ParametricModel::getFullModel(int components) const
   {
     std::vector<float> fullModel;
-    fullModel.reserve(MODEL_SIZE);
-    fullModel.insert(fullModel.end(), _relu1_1.begin(), _relu1_1.end());
-    fullModel.insert(fullModel.end(), _relu2_1.begin(), _relu2_1.end());
-    fullModel.insert(fullModel.end(), _relu3_1.begin(), _relu3_1.end());
-    fullModel.insert(fullModel.end(), _relu4_1.begin(), _relu4_1.end());
-    fullModel.insert(fullModel.end(), _relu5_1.begin(), _relu5_1.end());
+    fullModel.reserve(getModelSize(components));
+    if (components & e_relu1_1)
+      fullModel.insert(fullModel.end(), _relu1_1.begin(), _relu1_1.end());
+    if (components & e_relu2_1)
+      fullModel.insert(fullModel.end(), _relu2_1.begin(), _relu2_1.end());
+    if (components & e_relu3_1)
+      fullModel.insert(fullModel.end(), _relu3_1.begin(), _relu3_1.end());
+    if (components & e_relu4_1)
+      fullModel.insert(fullModel.end(), _relu4_1.begin(), _relu4_1.end());
+    if (components & e_relu5_1)
+      fullModel.insert(fullModel.end(), _relu5_1.begin(), _relu5_1.end());
     return fullModel;
   }
+
+  int ParametricModel::getModelSize(int components)
+  {
+    int s = 0;
+    if (components & e_relu1_1) s += (64 * 64 + 64) / 2;
+    if (components & e_relu2_1) s += (128 * 128 + 128) / 2;
+    if (components & e_relu3_1) s += (256 * 256 + 256) / 2;
+    if (components & e_relu4_1) s += (512 * 512 + 512) / 2;
+    if (components & e_relu5_1) s += (512 * 512 + 512) / 2;
+    return s;
+  }
+
 }

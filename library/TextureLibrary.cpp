@@ -14,7 +14,6 @@ namespace NN
     _maxLibraryCapacity = 50000;
     _maxProcessingBlockSize = 256;
     _descriptorNetwork = std::dynamic_pointer_cast<Sequential>(TorchLoader::getInstance()->loadFile("../tests/TestData/vgg.t7"));
-    _models = std::make_shared<Tensor>(std::vector<int>({_maxProcessingBlockSize, MODEL_SIZE}));
   }
 
   TextureLibrary::~TextureLibrary()
@@ -24,12 +23,12 @@ namespace NN
 
   void TextureLibrary::addImage(std::string const &path)
   {
-	std::shared_ptr<Tensor> t = tensorFromImage(path, 512);
-	if (t != nullptr)
-	  {
-	    ParametricModel model = computeParametricModel(t);
-	    _library[path] = model;
-	  }
+    std::shared_ptr<Tensor> t = tensorFromImage(path, 512, 15);
+    if (t != nullptr)
+      {
+	ParametricModel model = computeParametricModel(t);
+	_library[path] = model;
+      }
   }
 
   void TextureLibrary::addDirectory(std::string const &path)
@@ -58,23 +57,24 @@ namespace NN
     return ParametricModel(relu1_1, relu2_1, relu3_1, relu4_1, relu5_1);
   }
 
-  std::vector<std::string> TextureLibrary::findNN(std::shared_ptr<Tensor> example, int n)
+  std::vector<std::string> TextureLibrary::findNN(std::shared_ptr<Tensor> example, int n, int layers)
   {
     std::vector<std::pair<float, std::string>> bestResults;
-    std::shared_ptr<Tensor> exampleFullModel = std::make_shared<Tensor>(computeParametricModel(example).getFullModel());
-    std::shared_ptr<Tensor> indexes = std::make_shared<Tensor>(std::vector<float>(MODEL_SIZE, 1.0f));
+    std::shared_ptr<Tensor> exampleFullModel = std::make_shared<Tensor>(computeParametricModel(example).getFullModel(layers));
+    std::shared_ptr<Tensor> indexes = std::make_shared<Tensor>(std::vector<float>(_maxProcessingBlockSize, 1.0f));
+    std::shared_ptr<Tensor> models = std::make_shared<Tensor>(std::vector<int>({_maxProcessingBlockSize, ParametricModel::getModelSize(layers)}));
     int i = 0;
     int totalTested = 0;
     std::vector<std::string> paths;
     for (std::pair<std::string, ParametricModel> m : _library)
       {
-    	pushModelToGPU(m.second, i);
+    	pushModelToGPU(models, m.second, i, layers);
 	paths.push_back(m.first);
     	i++;
 	totalTested++;
-	if (i == _maxProcessingBlockSize)
+	if (i == _maxProcessingBlockSize || totalTested == _library.size())
 	  {
-	    Tensor t = _models->transpose();
+	    Tensor t = models->transpose();
 	    t.sub(*exampleFullModel);
 	    t.pow(2.0f);
 	    std::shared_ptr<Tensor> scratch = std::make_shared<Tensor>(std::vector<int>({t.getSize(1) + 1, t.getSize(0)}));
@@ -103,6 +103,7 @@ namespace NN
 	  }
       }
 
+    paths.clear();
     for (std::pair<float, std::string> r : bestResults)
       paths.push_back(r.second);
     return paths;
@@ -117,9 +118,9 @@ namespace NN
     return std::vector<int>(indices.begin(), indices.begin() + n);
   }
 
-  void TextureLibrary::pushModelToGPU(ParametricModel const &m, int offset)
+  void TextureLibrary::pushModelToGPU(std::shared_ptr<Tensor> gpuBuffer, ParametricModel const &m, int offset, int layers)
   {
-    std::vector<float> fullModel = m.getFullModel();;
-    (*_models)[offset]->copy(fullModel);
+    std::vector<float> fullModel = m.getFullModel(layers);
+    (*gpuBuffer)[offset]->copy(fullModel);
   }
 }

@@ -20,12 +20,14 @@ int main(int ac, char **av)
       std::string path;
       std::cout << ">> ";
       std::cin >> path;
+      if (path == "exit")
+	break;
       std::shared_ptr<Tensor> example = tensorFromImage(path, 512);
       if (example)
 	{
 	  clock_t begin = clock();
 	  std::cout << "Input : " << path << std::endl;
-	  std::vector<std::string> ret = t.findNN(example, 5);
+	  std::vector<std::string> ret = t.findNN(example, 5, (ParametricModel::e_relu2_1 | ParametricModel::e_relu3_1 | ParametricModel::e_relu4_1 | ParametricModel::e_relu5_1));
 	  for (std::string result : ret)
 	    std::cout << result << std::endl;
 	  clock_t end = clock();

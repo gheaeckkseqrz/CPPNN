@@ -19,11 +19,11 @@ namespace NN
     void addImage(std::string const &path);
     void addDirectory(std::string const &path);
     ParametricModel computeParametricModel(std::shared_ptr<Tensor> image);
-    std::vector<std::string> findNN(std::shared_ptr<Tensor> example, int n);
+    std::vector<std::string> findNN(std::shared_ptr<Tensor> example, int n, int layers = FULL_MODEL);
     std::vector<int> findBestIndices(std::vector<float> &data, int n);
 
   protected:
-    void pushModelToGPU(ParametricModel const &m, int offset);
+    void pushModelToGPU(std::shared_ptr<Tensor> gpuBuffer, ParametricModel const &m, int offset, int layers);
 
   private:
     std::shared_ptr<Tensor> _models;
