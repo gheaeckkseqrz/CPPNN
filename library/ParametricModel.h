@@ -22,6 +22,7 @@ namespace NN
 
   public:
     ParametricModel();
+    ParametricModel(std::vector<float> &fullModel);
     ParametricModel(std::vector<float> &relu1_1,
 		    std::vector<float> &relu2_1,
 		    std::vector<float> &relu3_1,
@@ -29,7 +30,7 @@ namespace NN
 		    std::vector<float> &relu5_1);
 
     std::vector<float> getFullModel(int components = FULL_MODEL) const;
-    static int getModelSize(int components);
+    static int getModelSize(int components = FULL_MODEL);
 
   private:
     std::vector<float> _relu1_1;

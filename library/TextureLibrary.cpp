@@ -1,5 +1,6 @@
 #include <experimental/filesystem>
 #include <iostream>
+#include <fstream>
 #include <numeric>
 
 #include "../MatToTensor.h"
@@ -11,7 +12,7 @@ namespace NN
 {
   TextureLibrary::TextureLibrary()
   {
-    _maxLibraryCapacity = 50000;
+    _maxLibraryCapacity = 5;
     _maxProcessingBlockSize = 256;
     _descriptorNetwork = std::dynamic_pointer_cast<Sequential>(TorchLoader::getInstance()->loadFile("../tests/TestData/vgg.t7"));
   }
@@ -37,10 +38,13 @@ namespace NN
     int i = 0;
     for(auto &f : d)
       {
-	addImage(f.path().string());
-	std::cout << "[" << i++ << "]" << f << std::endl;
-	if (i > _maxLibraryCapacity)
-	  break;
+	if (_library.count(f.path().string()) == 0)
+	  {
+	    addImage(f.path().string());
+	    std::cout << "[" << i++ << "]" << f << std::endl;
+	    if (i > _maxLibraryCapacity)
+	      break;
+	  }
       }
     std::cout << "Library contains " << _library.size() << " entries" << std::endl;
   }
@@ -107,6 +111,44 @@ namespace NN
     for (std::pair<float, std::string> r : bestResults)
       paths.push_back(r.second);
     return paths;
+  }
+
+  void TextureLibrary::saveToFile(std::string const &path) const
+  {
+    std::cout << "Saving to " << path << std::endl;
+    std::ofstream myfile;
+    myfile.open (path, std::ios::out | std::ios::binary);
+    int nbEntries = _library.size();
+    myfile.write((char*)&nbEntries, sizeof(int));
+    for (std::pair<std::string, ParametricModel> m : _library)
+      {
+	int pathLength = m.first.size();
+	myfile.write((char*)&pathLength, sizeof(int));
+	myfile.write(m.first.c_str(), pathLength);
+	myfile.write((char*)m.second.getFullModel().data(), ParametricModel::getModelSize() * sizeof(float));
+      }
+    std::cout << "Saved " << nbEntries << " to database [" << path << "]" << std::endl;
+  }
+
+  void TextureLibrary::loadFromFile(std::string const &path)
+  {
+    std::cout << "Loading from " << path << std::endl;
+    std::ifstream myfile;
+    myfile.open (path, std::ios::in | std::ios::binary);
+    int nbEntries;
+    myfile.read((char*)&nbEntries, sizeof(int));
+
+    for (int i(0) ; i < nbEntries ; ++i)
+      {
+	int pathLength;
+	myfile.read((char*)&pathLength, sizeof(int));
+	std::vector<char> path(pathLength, 0);
+	myfile.read(path.data(), pathLength);
+	std::vector<float> model(ParametricModel::getModelSize(), 0);
+	myfile.read((char*)model.data(), ParametricModel::getModelSize() * sizeof(float));
+	_library[std::string(path.begin(), path.end())] = ParametricModel(model);
+      }
+    std::cout << "Loaded " << nbEntries << " from saved database [" << path << "]" << std::endl;
   }
 
   std::vector<int> TextureLibrary::findBestIndices(std::vector<float> &data, int n)

@@ -10,8 +10,10 @@ int main(int ac, char **av)
 {
   TextureLibrary t;
   clock_t begin = clock();
+  t.loadFromFile("texture.db");
   std::cout << "Building library ..." << std::endl;
   t.addDirectory("/home/wilmot_p/DATA2/DATASETS/JOHN_DATABASE");
+  t.saveToFile("texture.db");
   clock_t end = clock();
   std::cout << "Building library took " << double(end - begin) / CLOCKS_PER_SEC / 3600 << " hours" << std::endl;
 

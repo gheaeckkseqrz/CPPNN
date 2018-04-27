@@ -6,6 +6,20 @@ namespace NN
   {
   }
 
+  ParametricModel::ParametricModel(std::vector<float> &fullModel)
+  {
+    int pos = 0;
+    _relu1_1 = std::vector<float>(fullModel.begin() + pos, fullModel.begin() + pos + getModelSize(e_relu1_1));
+    pos += getModelSize(e_relu1_1);
+    _relu1_1 = std::vector<float>(fullModel.begin() + pos, fullModel.begin() + pos + getModelSize(e_relu2_1));
+    pos += getModelSize(e_relu2_1);
+    _relu1_1 = std::vector<float>(fullModel.begin() + pos, fullModel.begin() + pos + getModelSize(e_relu3_1));
+    pos += getModelSize(e_relu3_1);
+    _relu1_1 = std::vector<float>(fullModel.begin() + pos, fullModel.begin() + pos + getModelSize(e_relu4_1));
+    pos += getModelSize(e_relu4_1);
+    _relu1_1 = std::vector<float>(fullModel.begin() + pos, fullModel.begin() + pos + getModelSize(e_relu5_1));
+  }
+
   ParametricModel::ParametricModel(std::vector<float> &relu1_1,
 				   std::vector<float> &relu2_1,
 				   std::vector<float> &relu3_1,
