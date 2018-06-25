@@ -40,6 +40,20 @@ std::shared_ptr<NN::Tensor> tensorFromImage(std::string const &path, int maxSize
   return matToTensor(image);
 }
 
+std::shared_ptr<NN::Tensor> resizeTensor(std::shared_ptr<NN::Tensor> t, int w, int h)
+{
+  if (t->getSize(2) == w && t->getSize(1) == h)
+    return t;
+  std::shared_ptr<NN::Tensor> goodLayout = std::make_shared<NN::Tensor>(t->getSizes());
+  NN::OpenCLFuncs::getInstance()->tensorToMat(*t, *goodLayout, goodLayout->getNbElements());
+  std::vector<float> data = goodLayout->read();
+  cv::Mat m(goodLayout->getSize(1), goodLayout->getSize(2), CV_32FC3, data.data());
+  cv::Mat m2;
+  cv::resize(m, m2, cv::Size(w, h), 0, 0, cv::INTER_CUBIC);
+  std::shared_ptr<NN::Tensor> r = matToTensor(m2);
+  return r;
+}
+
 void saveTensorAsImage(std::shared_ptr<NN::Tensor> t, std::string const &path)
 {
   std::shared_ptr<NN::Tensor> goodLayout = std::make_shared<NN::Tensor>(t->getSizes());
