@@ -41,8 +41,10 @@ namespace NN
     Tensor &div(Tensor const &o);
     Tensor &pow(float value);
     Tensor &fill(float value);
+    Tensor &sqrt();
     Tensor &copy(Tensor const &o);
     Tensor &copy(std::vector<float> const &o);
+    Tensor &clamp(float min = 0, float max = 1);
 
     Tensor means() const;
     float min() const;
@@ -50,6 +52,7 @@ namespace NN
     Tensor transpose() const;
     std::shared_ptr<Tensor> covariance(bool half = false, bool flaten = false); // const;
     std::shared_ptr<Tensor> matrixMultiply(Tensor &o, std::shared_ptr<Tensor> output = nullptr);
+    std::shared_ptr<Tensor> diagonalise();
 
     std::string print(bool data = false) const;
 

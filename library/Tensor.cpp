@@ -1,6 +1,8 @@
 #include <algorithm>
 #include <clBLAS.h>
 #include <ctime>
+#include <cstdlib>
+#include <cmath>
 
 #include "Tensor.h"
 #include "OpenCL.h"
@@ -150,7 +152,7 @@ namespace NN
     else if (getNbElements()  == o.getNbElements())
       OpenCLFuncs::getInstance()->tensorElementWiseAdd(*this, *this, o, getNbElements());
     else
-      throw std::runtime_error("Can't run mul on " + print() + " && " + o.print());
+      throw std::runtime_error("Can't run add on " + print() + " && " + o.print());
     return *this;
   }
 
@@ -199,6 +201,12 @@ namespace NN
     return *this;
   }
 
+  Tensor &Tensor::sqrt()
+  {
+    OpenCLFuncs::getInstance()->tensorSqrt(*this, *this, getNbElements());
+    return *this;
+  }
+
   Tensor &Tensor::copy(Tensor const &o)
   {
     assert(getNbElements() == o.getNbElements());
@@ -210,6 +218,12 @@ namespace NN
   {
     assert(getNbElements() == o.size());
     _storage->write(o, _offset);
+    return *this;
+  }
+
+  Tensor &Tensor::clamp(float min, float max)
+  {
+    OpenCLFuncs::getInstance()->tensorClamp(*this, min, max, getNbElements());
     return *this;
   }
 
@@ -303,6 +317,14 @@ namespace NN
       std::cout << "Running clblasSgemm " << double(end - begin) / CLOCKS_PER_SEC << " sec" << std::endl;
 
     return tC;
+  }
+
+  std::shared_ptr<Tensor> Tensor::diagonalise()
+  {
+    assert (getSizes().size() == 1);
+    std::shared_ptr<Tensor> result = std::make_shared<Tensor>(std::vector<int>({getSize(0), getSize(0)}));
+    OpenCLFuncs::getInstance()->tensorDiagonalise(*this, *result, result->getNbElements());
+    return result;
   }
 
   std::string Tensor::print(bool data) const
