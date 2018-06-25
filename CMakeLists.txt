@@ -55,6 +55,7 @@ add_library( ArtoNNLib
   library/TorchTensor.cpp
   library/VGGPreprocessing.cpp
   library/WCT.cpp )
+
 set_target_properties( ArtoNNLib PROPERTIES VERSION ${PROJECT_VERSION})
 set_target_properties( ArtoNNLib PROPERTIES SOVERSION 1)
 target_link_libraries( ArtoNNLib ${OpenCL_LIBRARY} ${CLBLAS_LIBRARIES} ${OpenCV_LIBS})# -lstdc++fs)
@@ -76,4 +77,7 @@ target_link_libraries( ConvBenchmark ArtoNNLib )
 
 add_executable( TextureLibrary samples/TextureLibrary.cpp MatToTensor.cpp )
 target_link_libraries( TextureLibrary ArtoNNLib ${OpenCV_LIBS} )
+
+add_executable( StyleTransfer samples/StyleTransfer.cpp MatToTensor.cpp )
+target_link_libraries( StyleTransfer ArtoNNLib ${OpenCV_LIBS} )
 
