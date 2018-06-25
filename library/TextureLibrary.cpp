@@ -1,4 +1,4 @@
-#include <experimental/filesystem>
+//#include <experimental/filesystem>
 #include <iostream>
 #include <fstream>
 #include <numeric>
@@ -34,18 +34,18 @@ namespace NN
 
   void TextureLibrary::addDirectory(std::string const &path)
   {
-    std::experimental::filesystem::recursive_directory_iterator d(path);
-    int i = 0;
-    for(auto &f : d)
-      {
-	if (_library.count(f.path().string()) == 0)
-	  {
-	    addImage(f.path().string());
-	    std::cout << "[" << i++ << "]" << f << std::endl;
-	    if (i > _maxLibraryCapacity)
-	      break;
-	  }
-      }
+    // std::experimental::filesystem::recursive_directory_iterator d(path);
+    // int i = 0;
+    // for(auto &f : d)
+    //   {
+    // 	if (_library.count(f.path().string()) == 0)
+    // 	  {
+    // 	    addImage(f.path().string());
+    // 	    std::cout << "[" << i++ << "]" << f << std::endl;
+    // 	    if (i > _maxLibraryCapacity)
+    // 	      break;
+    // 	  }
+    //   }
     std::cout << "Library contains " << _library.size() << " entries" << std::endl;
   }
 
