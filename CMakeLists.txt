@@ -53,7 +53,8 @@ add_library( ArtoNNLib
   library/TorchString.cpp
   library/TorchTable.cpp
   library/TorchTensor.cpp
-  library/VGGPreprocessing.cpp )
+  library/VGGPreprocessing.cpp
+  library/WCT.cpp )
 set_target_properties( ArtoNNLib PROPERTIES VERSION ${PROJECT_VERSION})
 set_target_properties( ArtoNNLib PROPERTIES SOVERSION 1)
 target_link_libraries( ArtoNNLib ${OpenCL_LIBRARY} ${CLBLAS_LIBRARIES} ${OpenCV_LIBS})# -lstdc++fs)
