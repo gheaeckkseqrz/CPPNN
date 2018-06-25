@@ -81,3 +81,5 @@ target_link_libraries( TextureLibrary ArtoNNLib ${OpenCV_LIBS} )
 add_executable( StyleTransfer samples/StyleTransfer.cpp MatToTensor.cpp )
 target_link_libraries( StyleTransfer ArtoNNLib ${OpenCV_LIBS} )
 
+add_executable( VideoStyleTransfer samples/VideoStyleTransfer.cpp MatToTensor.cpp )
+target_link_libraries( VideoStyleTransfer ArtoNNLib ${OpenCV_LIBS} )
