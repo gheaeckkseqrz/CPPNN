@@ -11,6 +11,7 @@
 #include "TorchString.h"
 #include "TorchTable.h"
 #include "TorchTensor.h"
+#include "TorchSpatialUpsamplingNearest.h"
 
 namespace NN
 {
@@ -104,8 +105,8 @@ namespace NN
 	  loaded[objectId] = (new TorchConvolution())->loadFromFile(file, loaded);
 	// else if (className == "nn.SpatialFullConvolution")
 	// 	loaded[objectId] = new FullConvolution();
-	// else if (className == "nn.SpatialUpSamplingNearest")
-	// 	loaded[objectId] = new SpatialUpsamplingNearest();
+	else if (className == "nn.SpatialUpSamplingNearest")
+	  loaded[objectId] = (new TorchSpatialUpsamplingNearest())->loadFromFile(file, loaded);
 	// else if (className == "nn.Tanh")
 	// 	loaded[objectId] = new Tanh();
 	// else if (className == "nn.TotalVariation")

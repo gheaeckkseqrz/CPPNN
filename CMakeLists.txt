@@ -32,6 +32,7 @@ add_library( ArtoNNLib
   library/Segmenter.cpp
   library/Sequential.cpp
   library/SingularValueDecomposition.cpp
+  library/SpatialUpsamplingNearest.cpp
   library/Tanh.cpp
   library/Tensor.cpp
   library/TensorflowConvolution.cpp
@@ -47,6 +48,7 @@ add_library( ArtoNNLib
   library/TorchReflectionPadding.cpp
   library/TorchRelu.cpp
   library/TorchSequential.cpp
+  library/TorchSpatialUpsamplingNearest.cpp
   library/TorchStorage.cpp
   library/TorchString.cpp
   library/TorchTable.cpp
