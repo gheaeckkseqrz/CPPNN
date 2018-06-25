@@ -31,6 +31,7 @@ add_library( ArtoNNLib
   library/Relu.cpp
   library/Segmenter.cpp
   library/Sequential.cpp
+  library/SingularValueDecomposition.cpp
   library/Tanh.cpp
   library/Tensor.cpp
   library/TensorflowConvolution.cpp
